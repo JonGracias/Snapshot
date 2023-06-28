@@ -1,0 +1,4 @@
+node_modules
+tempDB
+snapshot_flask_installer.sh
+snapshot_start.sh
