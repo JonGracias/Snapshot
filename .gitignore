@@ -1,0 +1,11 @@
+# Ignore the scripts
+snapshot_flask_installer.sh
+snapshot_start.sh
+
+# Ignore the .env file (assuming it contains sensitive information)
+.env
+tempDB
+
+# Ignore Python virtual environment files
+venv/
+env/

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Snapshot</title>
+    <meta name="Snapshot" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/global.css">
+    <link rel="stylesheet" href="/static/css/frontpage.css">
+  </head>
+  <body >
+    <main>
+      <!--[if lt IE 7]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+      <![endif]-->
+      <header style="background-color: red; padding-left: 20px; padding-right: 20px;">
+        <div class='sectionContainer'>
+          <h1>Snapshot</h1><span>v1.0.0</span>
+        </div>
+      </header>
+      <button onclick="sanitizeAndUpload('path/to/your/file')">Click Me</button>
+      <div class='sectionContainer' style="padding:20px;">
+        <form id="searchForm">
+          <input type="text" id="searchInput" placeholder="Search...">
+          <input type="submit" value="Search">
+        </form>
+        <div id="searchPopup" class="popup">
+          <button id="closePopup">Close</button>
+        </div>
+      </div>
+
+
+      <div id='navContainer' class='navContainer' style="padding:20px;">
+        <div id='titlesContainer' class='titlesContainer'>
+          {% for i in range(titles|length) %}
+            <div class='docTitles'>
+              <div class='title'>
+                <h2>{{ titles[i] }}</h2>
+              </div>
+            </div> 
+          {% endfor %}
+        </div>
+        <div id='dateContainer' class='titlesContainer'>
+          {% for i in range(titles|length) %}
+            <div class='docTitles'>
+              <div class='date'>
+                <h3>{{ dates[i] }}</h3>
+              </div>
+            </div> 
+          {% endfor %}
+        </div>
+      </div>
+      
+
+
+      <div class='sectionContainer' style="padding:20px;">
+        <div id='ssInputPanel' 
+             class='drag-container' 
+             ondrop="dropHandler(event)" 
+             ondragover="dragOverHandler(event)"
+             ondragleave="dragLeaveHandler(event)">
+
+          <div class="countContainer">
+            <div class="projectCounter">
+              {% for index in range(titles|length)%}
+              <div key={{ index }} class="countDiv{% if index + 1 == 1 %} lighter{% endif %}">
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <button class="scrollerLeft" data-length="{{ table_htmls|length }}" onclick="scrollLeftX()">
+            &lt;
+          </button>
+
+            {% for i in range(table_htmls|length) %}
+              <div class='tablesContainer'>
+                <div class ='tables'>
+                  <!-- Show the actual spreadsheet -->
+                  {{ table_htmls[i] | safe }}
+                </div>
+              </div> 
+            {% endfor %}
+
+ 
+          <button class="scrollerRight" data-length="{{ table_htmls|length }}" onclick="scrollRight()">
+            &gt;
+          </button>
+        </div>
+      </div>
+      <div class='input-sectionContainer'>
+        <div class='grid-container'>
+          <div class='grid-item'>Action</div>
+          <div class='grid-item'>WorkSheet</div>
+          <div class='grid-item'>Column</div>
+          <div class='grid-item'>Search Term</div>
+        </div>
+        <div id="groupContainer" class='groupContainer'></div>
+        <div class='buttonContainer' style="padding:20px;">
+          <button onclick="addGroup()">New Group</button>
+          <button onclick="submit()">Submit</button>
+        </div>
+      </div>
+      <!-- use version 0.19.3 -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script type="text/javascript" src="/static/js/searchdb.js"></script>
+      <script type="text/javascript" src="/static/js/searchGroups.js"></script>
+      <script type="text/javascript" src="/static/js/newSpreadsheet.js"></script>
+      <script type="text/javascript" src="/static/js/scrollButtons.js"></script>
+    </main>
+  </body>
+</html>

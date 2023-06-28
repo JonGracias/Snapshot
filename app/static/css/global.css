@@ -1,0 +1,46 @@
+html{
+    color-scheme: light dark;
+}
+
+
+body{
+    font-family: system-ui;
+    font-size: 1.125rem;
+    line-height: 1.6;
+}
+
+
+img,
+picture, 
+svg {
+    max-width: 100%;
+    display: block;
+}
+
+main{
+    width: min(85ch, 100% - 4rem);
+    margin-inline: auto;
+}
+
+/* Hide the default scroll bars */
+::-webkit-scrollbar {
+    width: 0.1em;
+    height: 0.1em;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: none;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 0.25em;
+  }
+  
+  /* On hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #666;
+  }
+  
