@@ -58,7 +58,6 @@
 .scrollerLeft{
     position: absolute;
     background-color: transparent;
-    color: black;
     height:400px;
     border-radius: 0px;
     border: none;
@@ -74,7 +73,6 @@
     background-color: transparent;
     height:400px;
     border-radius: 0px;
-    color: black;
     border: none;
     width: 50px;
     font-size: 2em;
@@ -132,10 +130,7 @@
 .drag-container {
     display: flex;
     padding: 0;
-    overflow-x: auto;
-    overflow-y: auto;
-    background-color: #fff;
-    color: black;
+    overflow:hidden;
     scrollbar-width: thin;
     scrollbar-color: transparent transparent;
     scroll-behavior: smooth;
@@ -180,8 +175,11 @@
     scroll-snap-align: start;
     scroll-snap-stop: always;
     opacity: 1;
+    overflow: hidden;
+    width:95%;
 }
 .tables{
+    overflow: auto;
     opacity:1;
     transition: opacity 1s ease-out;
 }
