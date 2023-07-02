@@ -43,4 +43,8 @@ main{
   ::-webkit-scrollbar-thumb:hover {
     background: #666;
   }
+
+  * {
+    box-sizing: border-box;
+  }
   

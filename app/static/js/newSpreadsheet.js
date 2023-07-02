@@ -1,5 +1,3 @@
-
-
 function dragOverHandler(event) {
   event.preventDefault();
   event.currentTarget.classList.add('drag-over');
@@ -13,55 +11,19 @@ function dragLeaveHandler(event) {
 function dropHandler(event) {
   event.preventDefault();
   event.currentTarget.classList.remove('drag-over');
-
-  // Handle the dropped file here
-  var file = event.dataTransfer.files[0];
-  console.log('File dropped:', file.name);
-
-  sanitizeAndUpload(file);
+  
+  const file = event.dataTransfer.files[0];
+  const fileInput = document.getElementById('fileInput');
+  fileInput.files = event.dataTransfer.files;
+  
+  setCurrentItem(0);
+  document.getElementById('uploadForm').style.display = 'block';
 }
 
-function default_file(filePath){
-    const formData = new FormData();
-    formData.append('file', filePath);
-  
-    fetch('/upload', {
-      method: 'POST',
-      body: formData
-    })
-      .then(response => {
-        if (response.ok) {
-          console.log('File uploaded successfully');
-        } else {
-          console.log('Error uploading file');
-        }
-      })
-      .catch(error => {
-        console.log('Error uploading file:', error);
-      });
-  }
-  
 
-
-function sanitizeAndUpload(file) {
-  
-    const formData = new FormData();
-    formData.append('file', file); // Convert JSON to a string before appending
-
-    // Use fetch API to send the data to the server
-    fetch('/upload', {
-      method: 'POST',
-      body: formData
-    })
-      .then(response => {
-        if (response.ok) {
-          console.log('File uploaded successfully');
-        } else {
-          console.log('Error uploading file');
-        }
-      })
-      .catch(error => {
-        console.log('Error uploading file:', error);
-      });
-
-}
+document.addEventListener('DOMContentLoaded', function() {
+  const dragContainer = document.getElementById('dragContainer');
+  dragContainer.addEventListener('dragover', dragOverHandler);
+  dragContainer.addEventListener('dragleave', dragLeaveHandler);
+  dragContainer.addEventListener('drop', dropHandler);
+});

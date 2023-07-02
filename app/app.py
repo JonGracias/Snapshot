@@ -7,7 +7,7 @@ import dotenv
 import json
 import pandas as pd
 from datetime import datetime
-
+import bleach
 
 
 
@@ -55,12 +55,20 @@ def format_date(date):
 
 class Spreadsheet:
     @staticmethod
-    def save(content, _id):
-        date = format_date(datetime.now())
-        data = {"_id": _id, "timestamp": date, "content": content}
-        filter_query = {"_id": _id}
-        update_operation = {"$set": data}
-        mongo.db[collection_name].update_one(filter_query, update_operation, upsert=True)
+    def save(content, name, date):
+        id = f"{name}-{date}"
+        timestamp = datetime.now()
+        filter_query = {"_id":id}
+        existing_document = mongo.db[collection_name].find_one(filter_query)
+
+        if existing_document:
+            update_operation = {"$set": {"content": content}}
+            mongo.db[collection_name].update_one(filter_query, update_operation)
+        else:
+            data = {"_id":id, "name": name, "date":date, "timestamp": timestamp, "content": content}
+            mongo.db[collection_name].insert_one(data)
+
+
 
     @staticmethod
     def get():
@@ -88,25 +96,40 @@ def format_workbook(workbook):
     return data
 
 def format_for_html(data):
-    titles = []
+    upload = '''
+    <div class='fileUploader'>
+        <h1>File Upload</h1>
+        <div id="dragContainer" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)" ondrop="dropHandler(event); setCurrentItem(0);">
+            <p>Drag and drop a file here</p>
+        </div>
+        <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+            <input id="fileInput" type="file" name="file">
+            <label for="dateInput">Date (MM/YYYY):</label>
+            <input type="text" id="dateInput" name="dateInput" pattern="\d{2}/\d{4}" required>
+            <input type="submit" value="Upload">
+        </form>
+    </div>
+    ''' 
+
+    titles = [' ']
     contents = []
-    dates = []
+    dates = [' ']
 
     for document in data:
-        title = document.pop('_id')
+        title = document.pop('name')
         titles.append(title)
 
         content = document.pop('content')
         content_dict = json.loads(content)
 
-        date = document.pop('timestamp')
+        date = document.pop('date')
         dates.append(date)
 
         content_key = next(iter(content_dict.keys()))
 
         transformed_content = [{k: v.replace('\n', '') for k, v in entry.items()} for entry in content_dict[content_key]]
+        
         contents.append(transformed_content)
-
 
     dfs = []
     for content in contents:
@@ -115,7 +138,7 @@ def format_for_html(data):
         else:
             df = pd.DataFrame(content)
         dfs.append(df)
-    table_htmls = [df.to_html(index=False) for df in dfs]
+    table_htmls = [upload] + [df.to_html(index=False) for df in dfs]  # Add upload at index 0
 
     return titles, table_htmls, dates
 
@@ -133,13 +156,17 @@ def index():
 @app.route('/upload', methods=['POST'])
 def upload():
     file = request.files['file']
-    workbook = openpyxl.load_workbook(file)
+    date = request.form['dateInput']
+
+    workbook = openpyxl.load_workbook(file, data_only=True)
     json_data = format_workbook(workbook)
+
     for sheet_name, sheet_data in json_data.items():
-        id_ = sheet_name
+        name = sheet_name
         formatted_data = json.dumps({sheet_name: sheet_data}, indent=4)
-        Spreadsheet.save(formatted_data, id_)
+        Spreadsheet.save(formatted_data, name, date)
     return flask.redirect(flask.url_for('index'))
+
 
 @app.route('/search', methods=['POST'])
 def search_results():
