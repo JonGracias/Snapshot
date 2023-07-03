@@ -1,3 +1,7 @@
+root{
+  --thead-height: 50px;
+}
+
 html{
     color-scheme: light dark;
 }

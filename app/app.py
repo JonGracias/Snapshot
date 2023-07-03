@@ -97,16 +97,14 @@ def format_workbook(workbook):
 
 def format_for_html(data):
     upload = '''
-    <div class='fileUploader'>
+    <div class='fileUploader' id="dragContainer" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)" ondrop="dropHandler(event); setCurrentItem(0);">
         <h1>File Upload</h1>
-        <div id="dragContainer" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)" ondrop="dropHandler(event); setCurrentItem(0);">
-            <p>Drag and drop a file here</p>
-        </div>
-        <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
-            <input id="fileInput" type="file" name="file">
-            <label for="dateInput">Date (MM/YYYY):</label>
-            <input type="text" id="dateInput" name="dateInput" pattern="\d{2}/\d{4}" required>
-            <input type="submit" value="Upload">
+        <p>Drag and drop a file here</p>
+        <form id="uploadForm" action="/upload" method="POST" class="file" enctype="multipart/form-data">
+            <input id="fileInput" type="file" name="file" class="fileItem">
+            <label for="dateInput" class="fileItem">Date (MM/YYYY):</label>
+            <input type="text" id="dateInput" name="dateInput" pattern="\d{2}/\d{4}" required class="fileItem">
+            <input type="submit" value="Upload" class="fileItem">
         </form>
     </div>
     ''' 
@@ -143,8 +141,9 @@ def format_for_html(data):
     return titles, table_htmls, dates
 
 
-@app.route('/')
-def index():
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def index(path):
     spreadsheet_data = Spreadsheet.get()
     titles, table_htmls, dates = format_for_html(spreadsheet_data)
     return render_template('index.html',
@@ -172,7 +171,7 @@ def upload():
 def search_results():
     query = request.form['query']
     results_html = generate_search_results(query)
-    return render_template('search_results.html', results_html=results_html)
+    return render_template('index.html', results_html=results_html)
 
 def generate_search_results(query):
     results = mongo.db.snapshot.find_one({'Referred By': query})  
