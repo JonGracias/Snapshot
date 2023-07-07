@@ -52,8 +52,9 @@ function updateDocTitles() {
     const position = parseInt(date.getAttribute('position'));
     if (position === currentItem) {
       date.classList.remove('hide');
-      date.selected = true; // Select the date associated with currentItem
-      currentDate = date.value; // Update currentDate with the selected date
+      //This is broken
+      /* date.selected = true; // Select the date associated with currentItem
+      currentDate = date.value; // Update currentDate with the selected date */
     } else {
       date.classList.add('hide');
     }
