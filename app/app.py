@@ -1,15 +1,14 @@
-import openpyxl
 from flask import Flask, render_template, request,redirect, url_for
 from flask_pymongo import PyMongo
-import flask
-import os
-import dotenv
-import json
-import pandas as pd
+from operator import itemgetter
 from datetime import datetime
-import bleach
-
-
+from flask import Markup
+import pandas as pd
+import openpyxl
+import dotenv
+import flask
+import json
+import os
 
 dotenv.load_dotenv()
 app = Flask(__name__)
@@ -22,12 +21,8 @@ app.config.update(
 )
 
 mongo = PyMongo(app)
-
-
-mongo = PyMongo(app)
 current_user = "user"  # Replace with your dynamic user value / session based /users
 collection_name = f"{current_user}"  # Create the dynamic collection namemongo.db[collection_name].create_index([("timestamp", pymongo.ASCENDING)], expireAfterSeconds=3600, metaField="ts")
-
 
 def format_date(date):
     month_names = {
@@ -55,7 +50,7 @@ def format_date(date):
 
 class Spreadsheet:
     @staticmethod
-    def save(content, name, date):
+    def save(content, name, date, position_number):
         id = f"{name}-{date}"
         timestamp = datetime.now()
         filter_query = {"_id":id}
@@ -65,7 +60,7 @@ class Spreadsheet:
             update_operation = {"$set": {"content": content}}
             mongo.db[collection_name].update_one(filter_query, update_operation)
         else:
-            data = {"_id":id, "name": name, "date":date, "timestamp": timestamp, "content": content}
+            data = {"_id":id, "name": name, "position_number": position_number, "date":date, "timestamp": timestamp, "content": content}
             mongo.db[collection_name].insert_one(data)
 
 
@@ -96,37 +91,31 @@ def format_workbook(workbook):
     return data
 
 def format_for_html(data):
-    upload = '''
-    <div class='fileUploader' id="dragContainer" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)" ondrop="dropHandler(event); setCurrentItem(0);">
-        <h1>File Upload</h1>
-        <p>Drag and drop a file here</p>
-        <form id="uploadForm" action="/upload" method="POST" class="file" enctype="multipart/form-data">
-            <input id="fileInput" type="file" name="file" class="fileItem">
-            <label for="dateInput" class="fileItem">Date (MM/YYYY):</label>
-            <input type="text" id="dateInput" name="dateInput" pattern="\d{2}/\d{4}" required class="fileItem">
-            <input type="submit" value="Upload" class="fileItem">
-        </form>
-    </div>
-    ''' 
 
-    titles = [' ']
+    sorted_data = sorted(data, key=itemgetter('position_number', 'date'), reverse=True)
+    number_of_tables = largest_position_number()
+
+    titles = []
     contents = []
-    dates = [' ']
+    dates = []
+    positions = []
 
-    for document in data:
+
+    for document in sorted_data:
         title = document.pop('name')
         titles.append(title)
-
-        content = document.pop('content')
-        content_dict = json.loads(content)
 
         date = document.pop('date')
         dates.append(date)
 
-        content_key = next(iter(content_dict.keys()))
+        position = document.pop('position_number')
+        positions.append(position)
 
+        content = document.pop('content')
+        content_dict = json.loads(content)
+
+        content_key = next(iter(content_dict.keys()))
         transformed_content = [{k: v.replace('\n', '') for k, v in entry.items()} for entry in content_dict[content_key]]
-        
         contents.append(transformed_content)
 
     dfs = []
@@ -136,22 +125,18 @@ def format_for_html(data):
         else:
             df = pd.DataFrame(content)
         dfs.append(df)
-    table_htmls = [upload] + [df.to_html(index=False) for df in dfs]  # Add upload at index 0
 
-    return titles, table_htmls, dates
+    table_htmls =[df.to_html(index=False) for df in dfs] 
+    print(positions)
 
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def index(path):
-    spreadsheet_data = Spreadsheet.get()
-    titles, table_htmls, dates = format_for_html(spreadsheet_data)
-    return render_template('index.html',
-                            titles=titles,
-                            table_htmls=table_htmls,
-                            dates=dates)
 
-        
+    return titles, table_htmls, dates, number_of_tables, positions
+
+@app.route('/file_upload', methods=['GET'])
+def file_upload():
+    return render_template('upload.html')
+
 @app.route('/upload', methods=['POST'])
 def upload():
     file = request.files['file']
@@ -161,30 +146,72 @@ def upload():
     json_data = format_workbook(workbook)
 
     for sheet_name, sheet_data in json_data.items():
+        position_number = generate_position_number(sheet_name)
         name = sheet_name
         formatted_data = json.dumps({sheet_name: sheet_data}, indent=4)
-        Spreadsheet.save(formatted_data, name, date)
+        Spreadsheet.save(formatted_data, name, date, position_number)
     return flask.redirect(flask.url_for('index'))
+
+def generate_position_number(sheet_name):
+    result = mongo.db[collection_name].find_one({'name': sheet_name})
+
+    if result:
+        print(result['name']) 
+        position_number = result['position_number']
+    else:
+        print('else')
+        position_number = largest_position_number()
+
+    return position_number
+
+        
+
+def largest_position_number():
+    pipeline = [
+        {"$group": {"_id": None, "max_number": {"$max": "$position_number"}}},
+        {"$limit": 1}
+    ]
+
+    aggregation_result = mongo.db[collection_name].aggregate(pipeline)
+    newest_document = next(aggregation_result, None)
+
+    max_number = newest_document['max_number']+1 if newest_document else 0
+    return max_number
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def index(path):
+    spreadsheet_data = Spreadsheet.get()
+    titles, table_htmls, dates, number_of_tables, positions = format_for_html(spreadsheet_data)
+    print(number_of_tables)
+    return render_template('index.html',
+                            titles=titles,
+                            table_htmls=table_htmls,
+                            dates=dates,
+                            number_of_tables = number_of_tables,
+                            positions = positions)
 
 
 @app.route('/search', methods=['POST'])
 def search_results():
     query = request.form['query']
     results_html = generate_search_results(query)
-    return render_template('index.html', results_html=results_html)
+    return render_template('search.html', results_html=results_html)
 
 def generate_search_results(query):
-    results = mongo.db.snapshot.find_one({'Referred By': query})  
-    if results:
-        job_titles = [result['title'] for result in results['jobs']]
+    results = mongo.db[collection_name].find({'name': query})
+    first_result = next(results, None)
+    if first_result and 'content' in first_result:
         job_list_html = '<ul>'
-        for title in job_titles:
-            job_list_html += f'<li>{title}</li>'
+        for result in results:
+            job_name = result.get('name', '')
+            job_date = result.get('date', '')
+            job_list_html += f'<li>Name: {job_name}, Date: {job_date}</li>'
         job_list_html += '</ul>'
 
-        results_html = f'<h1>Search Results for "{query}":</h1>{job_list_html}'
+        results_html = Markup(f'<h1>Search Results for "{query}":</h1>{job_list_html}')
     else:
-        results_html = f'<p>No results found for "{query}".</p>'
+        results_html = Markup(f'No results found for "{query}".')
     
     
     return results_html

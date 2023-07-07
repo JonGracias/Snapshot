@@ -12,7 +12,6 @@ function dropHandler(event) {
   event.preventDefault();
   event.currentTarget.classList.remove('drag-over');
   
-  const file = event.dataTransfer.files[0];
   const fileInput = document.getElementById('fileInput');
   fileInput.files = event.dataTransfer.files;
   

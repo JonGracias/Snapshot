@@ -1,0 +1,18 @@
+
+body{
+    background-color:rgba(43, 43, 43, 0.24);
+}
+
+.searchContainer {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    white-space: nowrap;
+    height: 3rem;
+}
+
+
+.search{
+    margin-left: 1rem;
+}

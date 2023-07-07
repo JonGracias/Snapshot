@@ -11,7 +11,7 @@
     <meta name="Snapshot" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/static/css/global.css">
-    <link rel="stylesheet" href="/static/css/frontpage.css">
+    <link rel="stylesheet" href="/static/css/index.css">
   </head>
   <body >
     <main>
@@ -24,24 +24,22 @@
         </div>
       </header>
       <div id='navContainer' class='navContainer' >
-        <div id='searchContainer' class='tablesContainer'>
+        <div id='searchContainer' class='titlesContainer'>
           <form id="searchForm" class='search' >
             <input type="text" id="searchInput" placeholder="Search...">
             <input type="submit" value="Search">
           </form>
         </div>
         <div id="searchPopup" class="popup">
-          <button id="closePopup">Close</button>
         </div>
         <div id='titlesContainer' class='titlesContainer'>
           {% for i in range(titles|length) %}
               <div class="docTitles">
                   <div class="titles 
-                  {% if titles|length > 1 and i != 1 %}
+                  {% if titles|length > 1 and i != 0 %}
                   hide
-                  {% elif titles|length <= 1 and i != 0 %}
-                  hide
-                  {% endif %}">
+                  {% endif %}"
+                  position="{{ positions[i] }}">
                       <h2>{{ titles[i] }}</h2>
                   </div>
               </div> 
@@ -49,60 +47,54 @@
       </div>
       
         <div id='dateContainer' class='titlesContainer'>
-          {% for i in range(titles|length) %}
-            <div class="docTitles">
-              <div class="dates 
-              {% if titles|length > 1 and i != 1 %}
-              hide
-              {% elif titles|length <= 1 and i != 0 %}
-              hide
-              {% endif %}">
-                <h3>{{ dates[i] }}</h3>
-              </div>
-            </div> 
-          {% endfor %}
+          <select id="dateSelector" onchange="updateCurrentDate()" class="dateSelector">
+            {% for i in range(dates|length) %}
+              <option class="dates" value="{{ dates[i] }}" position="{{ positions[i] }}">{{ dates[i] }}</option>
+            {% endfor %}
+          </select>
         </div>
+
         <div id='countContainer' class='countContainer' style="justify-content:flex-end">
-          {% for i in range(titles|length)%}
-          <div class="docCounter">
-            <div class="counts">
+          {% for i in range(number_of_tables) %}
+            <div class="docCounter">
+              <div class="counts">
+                
+              </div>
             </div>
-          </div>
           {% endfor %}
         </div>
       </div>
       
 
 
-      <div class='drag-container ' style="padding:10px;" id='ssInputPanel' 
-      ondrop="dropHandler(event)" 
-      ondragover="dragOverHandler(event)"
-      ondragleave="dragLeaveHandler(event)">
-        <button class="scrollerLeft" data-length="{{ table_htmls|length }}" onclick="scrollLeftX()">
+      <div class='drag-container ' style="padding:10px;" >
+        <button class="scrollerLeft" data-length="{{ number_of_tables }}" onclick="scrollLeftX()">
           &lt;
         </button>
         <div class="docTables">
           {% for i in range(table_htmls|length) %}
-          <div class="docTablesInner 
-          {% if titles|length > 1 and i != 1 %}
+          <div class="docTablesInner
+          {% if titles|length > 1 and i != 0 %}
           hide
-          {% elif titles|length <= 1 and i != 0 %}
-          hide
-          {% endif %}">
-            <div class ="tables">
+          {% endif %}"
+          data-date="{{ dates[i] }}"
+          position="{{ positions[i] }}">
+            <div class ="tables" >
               {{ table_htmls[i] | safe }}
             </div>  
           </div> 
           {% endfor %}
         </div>
-        <button class="scrollerRight" data-length="{{ table_htmls|length }}" onclick="scrollRight()">
+        <button class="scrollerRight" data-length="{{ number_of_tables }}" onclick="scrollRight()">
           &gt;
         </button>
       </div>
 
 
       <div class='input-sectionContainer' style="align-items:flex-end; padding-right:3rem;">
-        <button onclick="setCurrentItem(0)">Upload File</button>
+        <button id='openPopup'>Upload File</button>
+        <button id='closePopup'>Close</button>
+        <div id='uploadPopup' class="popup"></div>
       </div>
 
 
@@ -123,12 +115,13 @@
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
       <script type="text/javascript" src="/static/js/searchdb.js"></script>
       <script type="text/javascript" src="/static/js/searchGroups.js"></script>
-      <script type="text/javascript" src="/static/js/newSpreadsheet.js"></script>
       <script type="text/javascript" src="/static/js/scrollButtons.js"></script>
+      <script type="text/javascript" src="/static/js/index.js"></script>
     </main>
     <script>
       document.addEventListener("DOMContentLoaded", function() {
-        setCurrentItem(1);
+        setDataLength({{ number_of_tables }});
+        setCurrentItem(0);
       });
     </script>
   </body>

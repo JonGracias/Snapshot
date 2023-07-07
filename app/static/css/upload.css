@@ -1,0 +1,30 @@
+.sectionContainer {
+    display: flex;
+    align-items: center;
+    position: relative;
+    flex-direction: row;
+}
+
+.fileUploader {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.file {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .fileItem:not(:last-child) {
+    margin-bottom: 10px;
+    margin-left: 60px;
+  }
+  
+  .fileItem:last-child {
+    margin: 0 auto;
+  }
