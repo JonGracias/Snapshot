@@ -23,80 +23,24 @@
           <h1>Snapshot</h1><span>v1.0.0</span>
         </div>
       </header>
-      <div id='navContainer' class='navContainer' >
-        <div id='searchContainer' class='titlesContainer'>
-          <form id="searchForm" class='search' >
-            <input type="text" id="searchInput" placeholder="Search...">
-            <input type="submit" value="Search">
-          </form>
-        </div>
-        <div id="searchPopup" class="popup">
-        </div>
-        <div id='titlesContainer' class='titlesContainer'>
-          {% for i in range(titles|length) %}
-              <div class="docTitles">
-                  <div class="titles 
-                  {% if titles|length > 1 and i != 0 %}
-                  hide
-                  {% endif %}"
-                  position="{{ positions[i] }}">
-                      <h2>{{ titles[i] }}</h2>
-                  </div>
-              </div> 
-          {% endfor %}
-      </div>
-      
-        <div id='dateContainer' class='titlesContainer'>
-          <select id="dateSelector" onchange="updateCurrentDate()" class="dateSelector">
-            {% for i in range(dates|length) %}
-              <option class="dates" value="{{ dates[i] }}" position="{{ positions[i] }}">{{ dates[i] }}</option>
-            {% endfor %}
-          </select>
-        </div>
 
-        <div id='countContainer' class='countContainer' style="justify-content:flex-end">
-          {% for i in range(number_of_tables) %}
-            <div class="docCounter">
-              <div class="counts">
-                
-              </div>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-      
-
-
-      <div class='drag-container ' style="padding:10px;" >
-        <button class="scrollerLeft" data-length="{{ number_of_tables }}" onclick="scrollLeftX()">
-          &lt;
-        </button>
-        <div class="docTables">
-          {% for i in range(table_htmls|length) %}
-          <div class="docTablesInner
-          {% if titles|length > 1 and i != 0 %}
-          hide
-          {% endif %}"
-          data-date="{{ dates[i] }}"
-          position="{{ positions[i] }}">
-            <div class ="tables" >
-              {{ table_htmls[i] | safe }}
-            </div>  
-          </div> 
-          {% endfor %}
-        </div>
-        <button class="scrollerRight" data-length="{{ number_of_tables }}" onclick="scrollRight()">
-          &gt;
-        </button>
-      </div>
-
-
-      <div class='input-sectionContainer' style="align-items:flex-end; padding-right:3rem;">
-        <button id='openPopup'>Upload File</button>
-        <button id='closePopup'>Close</button>
+      <div class="display">
+        <div id="searchPopup" class="popup"></div>
+        <div id='navigation'  class="popup"></div>
         <div id='uploadPopup' class="popup"></div>
       </div>
 
+      <div class='inputContainer'>
+
+        <button id='openSearch' >Browse Database </button>
+
+        <button id='openNav' >Open Tables </button>
+        <button id='closeNav'>Close</button>
+
+        <button id='openUpload' >Upload File</button>
+        <button id='closeUpload'>Close</button>
+
+      </div>
 
       <div class='input-sectionContainer'>
         <div class='grid-container'>
@@ -114,15 +58,9 @@
       <!-- use version 0.19.3 -->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
       <script type="text/javascript" src="/static/js/searchdb.js"></script>
-      <script type="text/javascript" src="/static/js/searchGroups.js"></script>
-      <script type="text/javascript" src="/static/js/scrollButtons.js"></script>
-      <script type="text/javascript" src="/static/js/index.js"></script>
+      <script type="text/javascript" src="/static/js/pipeline_builder.js"></script>
+      <script type="text/javascript" src="/static/js/save.js"></script>
+      <script type="text/javascript" src="/static/js/navigation.js"></script>
     </main>
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        setDataLength({{ number_of_tables }});
-        setCurrentItem(0);
-      });
-    </script>
   </body>
 </html>

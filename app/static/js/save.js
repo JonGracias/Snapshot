@@ -1,9 +1,9 @@
 $(document).ready(function() {
     var popup = $('#uploadPopup');
-    var open = $('#openPopup');
-    var close = $('#closePopup');
+    var open = $('#openUpload');
+    var close = $('#closeUpload');
 
-    close.hide(); // Hide the close button initially
+    close.hide();
   
     open.click(function() {
       popup.show();
@@ -14,8 +14,8 @@ $(document).ready(function() {
   
     function loadUpload() {
       $.ajax({
-        type: 'GET',  // Use GET to retrieve the HTML
-        url: '/file_upload',
+        type: 'GET',  
+        url: '/save',
         success: function(response) {
           popup.html(response);
         }
