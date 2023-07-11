@@ -1,0 +1,83 @@
+body {
+    background-color: rgba(43, 43, 43, 0.24);
+}
+
+.searchContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.job-button{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 10rem;
+    height: 10rem;
+    margin: 1em;
+
+}
+
+.svg-img{
+    margin-bottom: 1em;
+    width: 5rem;
+    height: 5rem;
+    border: 1px solid white;
+    background-image: url(/app/static/public/spreadSheet.svg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+  
+.job-button.selected {
+    border: 1px solid white;
+}
+  
+
+.searchItems ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    list-style-type: none;
+    padding: 0;
+}
+
+.searchItems li {
+    margin-bottom: 5px;
+}
+
+.searchItems button {
+    padding: 5px 10px;
+    background-color: #44477c98;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.searchItems button:active {
+    background-color: #bdbdbd8a;
+}
+
+#selectedItems {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+#selectedItems div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 5px;
+    padding: 5px 10px;
+    background-color: #44477c98;
+    border: none;
+    border-radius: 5px;
+}
+  
+

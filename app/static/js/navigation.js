@@ -3,25 +3,21 @@ $(document).ready(function() {
     var open = $('#openNav');
     var close = $('#closeNav');
 
-    
     close.hide();
-    
-    // Here add code to find number of tables user has clicked to send
-    /*     $('#searchForm').submit(function(event) {
-      event.preventDefault(); // Prevent form submission
-      var query = $('#searchInput').val();
-      popup.show();
-      loadSearchResults(query);
-    }); */
 
-    // to /navigation will also need names or _id to query mongodb
     
     open.click(function() {
+        closeOthers();
         nav.show();
         open.hide();
         close.show();
         loadNavigation(); //add query
     });
+
+    function closeOthers(){
+        $('#save').hide();
+        $('#load').hide();
+      }
 
     function loadNavigation() {
         $.ajax({

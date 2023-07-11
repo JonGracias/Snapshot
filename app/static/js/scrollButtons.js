@@ -1,9 +1,8 @@
 let currentItem = 0;
-let dataLength = 0;
+var button = document.querySelector('.scrollerRight');
+var dataLength = button.getAttribute('data-length');
 let currentDate = ''
 const startingIndex = 0;
-
-
 
 function setCurrentItem(newItem) {
   currentItem = newItem;
@@ -53,7 +52,7 @@ function updateDocTitles() {
     if (position === currentItem) {
       date.classList.remove('hide');
       //This is broken
-      /* date.selected = true; // Select the date associated with currentItem
+/*       date.selected = true; // Select the date associated with currentItem
       currentDate = date.value; // Update currentDate with the selected date */
     } else {
       date.classList.add('hide');
@@ -74,19 +73,23 @@ function updateDocTitles() {
 
 function scrollLeftX() {
 
-    if (currentItem <= startingIndex) {
+    if (currentItem === 0) {
         setCurrentItem(dataLength - 1);
+        console.log('here I am')
     } else {
         setCurrentItem(currentItem - 1);
     }
+    console.log(dataLength + 'datalength')
+    console.log(currentItem)
 }
 
 function scrollRight() {
     
-    if (currentItem >= dataLength-1) {
+    if (currentItem === dataLength-1) {
         setCurrentItem(startingIndex);
     } else {
         setCurrentItem(currentItem + 1);
     }
+    console.log(currentItem)
 
 }

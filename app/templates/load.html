@@ -11,7 +11,7 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="/static/css/global.css">
-        <link rel="stylesheet" href="/static/css/search.css">
+        <link rel="stylesheet" href="/static/css/load.css">
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -23,15 +23,17 @@
                     <input type="text" id="searchInput" placeholder="Search...">
                     <input type="submit" value="Search">
                 </form>
-                <button id="closeSearch">Close</button>
+            
             </div>
             <div class='searchItems'>
                 {{ results_html }}
             </div>
+            <button id="closeLoad">Close</button>
+            <button id="submit">Submit</button>
         </div>
         
               <!-- use version 0.19.3 -->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      <script type="text/javascript" src="/static/js/searchdb.js"></script>
+      <script type="text/javascript" src="/static/js/load.js"></script>
     </body>
 </html>

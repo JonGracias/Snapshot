@@ -44,17 +44,7 @@
   background-color: white;
 }
 
-.scrollerLeft,
-.scrollerRight {
-  position: relative;
-  background-color: transparent;
-  height: 400px;
-  border-radius: 0px;
-  border: none;
-  width: 50px;
-  font-size: 2em;
-  z-index: 3;
-}
+
 
 .input-sectionContainer {
   display: flex;
@@ -103,133 +93,7 @@
   padding-left: 5px;
 }
 
-.drag-container {
-  position: relative;
-  display: flex;
-  padding: 0;
-  overflow: hidden;
-  border-radius: 10px;
-  z-index: 0;
-  width: 100%;
-  flex-direction: row;
-}
 
-.drag-container.drag-over {
-  background-color: lightgray;
-}
-
-.docTables {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  border: 1px solid white;
-}
-
-.docTablesInner {
-  position: absolute;
-  width: 100%;
-  height: 100%; /* Set a specific height for scrolling */
-  overflow: auto; /* Enable scrolling */
-}
-
-.docTablesInner.hide {
-  opacity: 0;
-  display: none;
-  transition: opacity 0.01s ease-out;
-}
-
-.tables {
-  position: relative;
-  width: 100%;
-  min-width: 100%;
-  height: 100%;
-}
-
-.dataframe {
-  height: 100%;
-  position: relative;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-thead{
-  position: sticky;
-  top: 0;
-  background-color: rgba(16, 137, 211, 0.651);
-  color: white;
-}
-
-tbody{
-  overflow-y: auto;
-}
-
-
-th,
-td {
-  text-align: center;
-  word-wrap: break-word;
-  padding: 5px;
-  font-size: 12px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}  
-  
-
-.titlesContainer {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  padding: 0;
-  white-space: nowrap;
-  height: 3rem;
-}
-
-.countContainer {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  padding-right: 3rem;
-  white-space: nowrap;
-}
-
-.dateSelector{
-  position: absolute;
-  transition: all 0.5s ease-in-out;
-  list-style: none;
-  top: 2rem;
-  left: 1rem;
-  width: 200px;
-}
-  
-.docTitles {
-  position: absolute;
-  transition: all 0.5s ease-in-out;
-  list-style: none;
-  top: 0;
-  left: 1rem;
-  width: 100%;
-  overflow: auto;
-}
-
-.dates,
-.titles {
-  position: relative;
-  width: 100%;
-  opacity: 1;
-  transition: opacity 0.25s ease-out;
-}
-  
-.dates.hide,
-.titles.hide {
-  display:none;
-  opacity: 0;
-  transition: opacity 0.25s ease-out;
-}
   
 span {
   margin-top: 15px;

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request,redirect, url_for
+from flask import Flask, render_template, request,redirect,jsonify
 from flask_pymongo import PyMongo
 from operator import itemgetter
 from datetime import datetime
@@ -27,10 +27,10 @@ collection_name = f"{current_user}"
 #--------------------------------------Routes-----------------------------------------------------#
 @app.route('/save', methods=['GET'])
 def save():
-    return render_template('upload.html')
+    return render_template('save.html')
 
 
-@app.route('/navigation', methods=['GET'])
+""" @app.route('/navigation', methods=['GET'])
 def navigation():
     titles, table_htmls, dates, number_of_tables, positions = format_for_html()
     print(number_of_tables)
@@ -39,18 +39,41 @@ def navigation():
                             table_htmls=table_htmls,
                             dates=dates,
                             number_of_tables = number_of_tables,
-                            positions = positions)
+                            positions = positions) """
+
+@app.route('/navigation', methods=['GET', 'POST'])
+def navigation():
+    if request.method == 'POST':
+        clicked_items = request.form.get('clickedItems')
+        clicked_items = json.loads(clicked_items)
+        print(clicked_items)
+        titles, table_htmls, dates, number_of_tables, positions = format_for_html(clicked_items)
+        return render_template('navigation.html',
+                               titles=titles,
+                               table_htmls=table_htmls,
+                               dates=dates,
+                               number_of_tables=number_of_tables,
+                               positions=positions)
+
+    elif request.method == 'GET':
+        titles, table_htmls, dates, number_of_tables, positions = format_for_html()
+        return render_template('navigation.html',
+                               titles=titles,
+                               table_htmls=table_htmls,
+                               dates=dates,
+                               number_of_tables=number_of_tables,
+                               positions=positions)
 
 @app.route('/browseDB', methods=['GET'])
 def browse():
     results_html = format_for_browse()
-    return render_template('search.html', results_html=results_html)
+    return render_template('load.html', results_html=results_html)
 
 @app.route('/search', methods=['POST'])
 def search_results():
     query = request.form['query']
     results_html = generate_search_results(query)
-    return render_template('search.html', results_html=results_html)
+    return render_template('load.html', results_html=results_html)
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -90,18 +113,28 @@ class Spreadsheet:
             mongo.db[collection_name].insert_one(data)
 
     @staticmethod
-    def get():
-        documents = list(mongo.db[collection_name].find())
+    def get(clicked_items=None):
+        if clicked_items:
+            # Retrieve MongoDB documents based on clicked_items
+            documents = list(
+                mongo.db[collection_name].find({'name': {'$in': clicked_items}})
+            )
+        else:
+            documents = list(mongo.db[collection_name].find())
+
         if documents and 'content' in documents[0]:
             return documents
         else:
             print("No documents found or missing 'content' field")
-
-            return [{'_id': 'None',
-                      'name': 'No Data Found',
-                      'position_number': 0, 
-                      'date': '00/0000', 
-                      'content': '{\n    "Sheet1": [{\n"Load": "To Get",\n"Data": "Started"\n}]}'}]
+            return [
+                {
+                    '_id': 'None',
+                    'name': 'No Data Found',
+                    'position_number': 0,
+                    'date': '00/0000',
+                    'content': '{\n    "Sheet1": [{\n"Load": "To Get",\n"Data": "Started"\n}]}',
+                }
+            ]
     @staticmethod
     def getNames():
         documents = mongo.db[collection_name].find({}, {"name": 1, "_id": 0})
@@ -146,10 +179,10 @@ def format_for_browse():
         job_list_html = '<ul>'
         for title in unique_titles:
             job_name = title
-            job_list_html += f'<li>Name: {job_name}</li>'
+            job_list_html += f'<button class="job-button"><div class="svg-img"></div>{job_name}</button>'
         job_list_html += '</ul>'
 
-        results_html = Markup(f'<h1>Job Titles:</h1>{job_list_html}')
+        results_html = Markup(f"{job_list_html}")
     else:
         results_html = Markup(f'Nothing in Database.')
     
@@ -158,16 +191,18 @@ def format_for_browse():
 
 
 
-def format_for_html():
-    data = Spreadsheet.get()
+def format_for_html(clicked_items=None):
+    data = Spreadsheet.get(clicked_items)
     sorted_data = sorted(data, key=itemgetter('position_number', 'date'), reverse=True)
-    number_of_tables = largest_position_number()
+    if clicked_items:
+        number_of_tables = len(clicked_items)
+    else:
+        number_of_tables = largest_position_number()
 
     titles = []
     contents = []
     dates = []
     positions = []
-
 
     for document in sorted_data:
         title = document.pop('name')
@@ -186,7 +221,9 @@ def format_for_html():
         if isinstance(content_dict[content_key], str):
             transformed_content = [{k: v.replace('\n', '')} for k, v in json.loads(content_dict[content_key]).items()]
         else:
-            transformed_content = [{k: v.replace('\n', '') for k, v in entry.items()} for entry in content_dict[content_key]]
+            transformed_content = [
+                {k: v.replace('\n', '') for k, v in entry.items()} for entry in content_dict[content_key]
+            ]
         contents.append(transformed_content)
 
     dfs = []
@@ -197,8 +234,7 @@ def format_for_html():
             df = pd.DataFrame(content)
         dfs.append(df)
 
-    table_htmls =[df.to_html(index=False) for df in dfs] 
-    print(positions)
+    table_htmls = [df.to_html(index=False) for df in dfs]
 
     return titles, table_htmls, dates, number_of_tables, positions
 

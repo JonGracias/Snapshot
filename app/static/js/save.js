@@ -1,29 +1,38 @@
 $(document).ready(function() {
-    var popup = $('#uploadPopup');
-    var open = $('#openUpload');
-    var close = $('#closeUpload');
+    var save = $('#save');
+    var open = $('#openSave');
+    var close = $('#closeSave');
 
     close.hide();
+
   
     open.click(function() {
-      popup.show();
+      closeOthers();
+      save.show();
       open.hide();
       close.show();
-      loadUpload();
+      saveDocs();
     });
   
-    function loadUpload() {
+
+    function closeOthers(){
+      $('#load').hide();
+      $('#navigation').hide();
+    }
+
+
+    function saveDocs() {
       $.ajax({
         type: 'GET',  
         url: '/save',
         success: function(response) {
-          popup.html(response);
+          save.html(response);
         }
       });
     }
   
     close.click(function() {
-      popup.hide();
+      save.hide();
       close.hide();
       open.show();
     });
