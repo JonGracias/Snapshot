@@ -4,6 +4,7 @@ root{
 
 html{
     color-scheme: light dark;
+    overflow: hidden;
 }
 
 
@@ -22,8 +23,8 @@ svg {
 }
 
 main{
-    width: min(85ch, 100% - 4rem);
-    margin-inline: auto;
+    width: 100%;
+ 
 }
 
 /* Hide the default scroll bars */

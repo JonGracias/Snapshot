@@ -12,55 +12,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/static/css/global.css">
     <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/navigation.css">
+    <link rel="stylesheet" href="/static/css/load.css">
+    <link rel="stylesheet" href="/static/css/save.css">
   </head>
   <body >
     <main>
       <!--[if lt IE 7]>
         <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
       <![endif]-->
-      <header style="background-color: red; padding-left: 20px; padding-right: 20px;">
+      <header class="headerSection">
         <div class='sectionContainer'>
           <h1>Snapshot</h1><span>v1.0.0</span>
         </div>
       </header>
 
-      <div class="display">
-        <div id='load'        class='popup'></div>
-        <div id='navigation'  class="popup"></div>
-        <div id='save'        class="popup"></div>
-      </div>
+      <div class="hero">
 
-      <div class='inputContainer'>
-
-        <button id='openLoad' >Browse Database </button>
-
-        <button id='openNav' >Open Tables </button>
-        <button id='closeNav'>Close</button>
-
-        <button id='openSave' >Upload File</button>
-        <button id='closeSave'>Close</button>
-
-      </div>
-
-      <div class='input-sectionContainer'>
-        <div class='grid-container'>
-          <div class='grid-item'>Action</div>
-          <div class='grid-item'>WorkSheet</div>
-          <div class='grid-item'>Column</div>
-          <div class='grid-item'>Search Term</div>
+        <div class="fileBrowser">
+          <div id='load' class='browser'></div>
+          <div id='save' class="popup"></div>
         </div>
-        <div id="groupContainer" class='groupContainer'></div>
-        <div class='buttonContainer' style="padding:20px;">
-          <button onclick="addGroup()">New Group</button>
-          <button onclick="submit()">Submit</button>
+
+        <div class="workContainer">
+          <div class="tableDisplay">
+            <div id='navigation' class="navi"></div>
+          </div>
+          <div class="divider"></div>
+          <div class="pipeline">
+            <div class='input-sectionContainer'>
+              <div class='grid-container'>
+              <div class='grid-item'>Action</div>
+              <div class='grid-item'>WorkSheet</div>
+              <div class='grid-item'>Column</div>
+              <div class='grid-item'>Search Term</div>
+            </div>
+            <div id="groupContainer" class='groupContainer'></div>
+              <div class='buttonContainer' style="padding:20px;">
+                <button onclick="addGroup()">New Group</button>
+                <button onclick="submit()">Submit</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+
       <!-- use version 0.19.3 -->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      <script type="text/javascript" src="/static/js/load.js"></script>
-      <script type="text/javascript" src="/static/js/navigation.js"></script>
+      <script type="text/javascript" src="/static/js/index.js"></script>
       <script type="text/javascript" src="/static/js/save.js"></script>
+      <script type="text/javascript" src="/static/js/scrollButtons.js"></script>
       <script type="text/javascript" src="/static/js/thepipeline.js"></script>
+      <script type="text/javascript" src="/static/js/load.js"></script>
+      <script>
+        window.onload = function() {
+          loadNavigation();
+          browse(); // Call the browse() function when the page finishes loading
+        };
+      </script>
     </main>
   </body>
 </html>

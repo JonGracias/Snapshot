@@ -10,11 +10,11 @@
     <title>Snapshot</title>
     <meta name="Snapshot" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/static/css/global.css">
-    <link rel="stylesheet" href="/static/css/save.css">
+
   </head>
   <body>
-    <main>
+    <main style="background-color: black; padding: 20px;">
+
       <!--[if lt IE 7]>
         <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
       <![endif]-->
@@ -30,11 +30,16 @@
                 <input id="fileInput" type="file" name="file" class="fileItem">
                 <label for="dateInput" class="fileItem">Date (MM/YYYY):</label>
                 <input type="text" id="dateInput" name="dateInput" pattern="\d{2}/\d{4}" required class="fileItem">
-                <input type="submit" value="Upload" class="fileItem">
-            </form>
+
+                <div class="saveButtons">
+                    <input type="submit" value="Upload" class="fileItem">
+     
+                    <button id='closeSave' onclick="closeSave()">Close</button>
+                </div>
+              </form>
         </div>
       <!-- use version 0.19.3 -->
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     </main>
   </body>
 </html>

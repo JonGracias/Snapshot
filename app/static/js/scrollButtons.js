@@ -1,10 +1,11 @@
-let currentItem = 0;
+var currentItem = 0;
 var button = document.querySelector('.scrollerRight');
-var dataLength = button.getAttribute('data-length');
-let currentDate = ''
-const startingIndex = 0;
+var dataLength = 1;
+var currentDate = ''
+var startingIndex = 0;
 
 function setCurrentItem(newItem) {
+  console.log('setCurrentItem')
   currentItem = newItem;
   updateDocTitles();
 }
@@ -21,10 +22,10 @@ function updateCurrentDate() {
 
 function setDataLength(newDataLength) {
   dataLength = newDataLength;
-  console.log(dataLength);
 }
 
 function updateDocTitles() {
+  console.log(currentItem + 'currentItem');
   const titles = document.querySelectorAll('.titles');
   const tables = document.querySelectorAll('.docTablesInner');
   const counts = document.querySelectorAll('.counts');
@@ -38,34 +39,41 @@ function updateDocTitles() {
     }
   });
 
-  titles.forEach((title, index) => {
+  titles.forEach((title) => {
     const position = parseInt(title.getAttribute('position'));
+    if(dataLength === 1){
+      currentItem = position
+    }
+
     if (position === currentItem) {
-      title.classList.remove('hide');
+      title.classList.add('show');
     } else {
-      title.classList.add('hide');
+      title.classList.remove('show');
     }
   });
 
-  dates.forEach((date, index) => {
+  dates.forEach((date) => {
     const position = parseInt(date.getAttribute('position'));
+    if(dataLength === 1){
+      currentItem = position
+    }
     if (position === currentItem) {
-      date.classList.remove('hide');
-      //This is broken
-/*       date.selected = true; // Select the date associated with currentItem
-      currentDate = date.value; // Update currentDate with the selected date */
+      date.classList.add('show');
     } else {
-      date.classList.add('hide');
+      date.classList.remove('show');
     }
   });
 
-  tables.forEach((table, index) => {
+  tables.forEach((table) => {
     const tableDate = table.getAttribute('data-date');
     const position = parseInt(table.getAttribute('position'));
+    if(dataLength === 1){
+      currentItem = position
+    }
     if (position === currentItem && tableDate === currentDate) {
-      table.classList.remove('hide');
+      table.classList.add('show');
     } else {
-      table.classList.add('hide');
+      table.classList.remove('show');
     }
   });
 }
@@ -73,23 +81,18 @@ function updateDocTitles() {
 
 function scrollLeftX() {
 
-    if (currentItem === 0) {
-        setCurrentItem(dataLength - 1);
-        console.log('here I am')
+  if (currentItem <= 0) {
+      setCurrentItem(dataLength - 1);
     } else {
-        setCurrentItem(currentItem - 1);
+      setCurrentItem(currentItem - 1);
     }
-    console.log(dataLength + 'datalength')
-    console.log(currentItem)
-}
-
-function scrollRight() {
-    
-    if (currentItem === dataLength-1) {
-        setCurrentItem(startingIndex);
+  }
+  
+  function scrollRight() {
+    if (currentItem >= dataLength-1) {
+      setCurrentItem(startingIndex);
     } else {
-        setCurrentItem(currentItem + 1);
-    }
-    console.log(currentItem)
+      setCurrentItem(currentItem + 1);
+  }
 
 }

@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request,redirect,jsonify
 from flask_pymongo import PyMongo
 from operator import itemgetter
+from flask_caching import Cache
 from datetime import datetime
 from flask import Markup
 import pandas as pd
@@ -17,10 +18,12 @@ app.config.update(
     TEMPLATES_AUTO_RELOAD=True,
     DEBUG=True,
     MONGO_URI=os.getenv("DATABASE_URL"),
-    SECRET_KEY=os.getenv("SECRET_KEY")
+    SECRET_KEY=os.getenv("SECRET_KEY"),
+    CACHE_TYPE = 'simple'
 )
 
 mongo = PyMongo(app)
+cache = Cache(app)
 current_user = "user"  
 collection_name = f"{current_user}" 
 
@@ -29,44 +32,41 @@ collection_name = f"{current_user}"
 def save():
     return render_template('save.html')
 
-
-""" @app.route('/navigation', methods=['GET'])
-def navigation():
-    titles, table_htmls, dates, number_of_tables, positions = format_for_html()
-    print(number_of_tables)
-    return render_template('navigation.html',
-                            titles=titles,
-                            table_htmls=table_htmls,
-                            dates=dates,
-                            number_of_tables = number_of_tables,
-                            positions = positions) """
-
 @app.route('/navigation', methods=['GET', 'POST'])
 def navigation():
     if request.method == 'POST':
         clicked_items = request.form.get('clickedItems')
         clicked_items = json.loads(clicked_items)
-        print(clicked_items)
         titles, table_htmls, dates, number_of_tables, positions = format_for_html(clicked_items)
         return render_template('navigation.html',
-                               titles=titles,
-                               table_htmls=table_htmls,
-                               dates=dates,
-                               number_of_tables=number_of_tables,
-                               positions=positions)
+                                titles=titles,
+                                table_htmls=table_htmls,
+                                dates=dates,
+                                number_of_tables=number_of_tables,
+                                positions=positions)
 
     elif request.method == 'GET':
-        titles, table_htmls, dates, number_of_tables, positions = format_for_html()
+        date = datetime.now()
+        formatted_date = date.strftime("%M / %d / %Y")
+
+        titles = [' Welcome']
+        table_htmls = ['Message to users']
+        dates = [formatted_date]
+        number_of_tables = 0
+        positions = ['0']
+
         return render_template('navigation.html',
-                               titles=titles,
-                               table_htmls=table_htmls,
-                               dates=dates,
-                               number_of_tables=number_of_tables,
-                               positions=positions)
+                                titles=titles,
+                                table_htmls=table_htmls,
+                                dates=dates,
+                                number_of_tables=number_of_tables,
+                                positions=positions,)
 
 @app.route('/browseDB', methods=['GET'])
+@cache.cached(timeout=300)
 def browse():
     results_html = format_for_browse()
+    
     return render_template('load.html', results_html=results_html)
 
 @app.route('/search', methods=['POST'])
@@ -177,9 +177,9 @@ def format_for_browse():
 
     if unique_titles:
         job_list_html = '<ul>'
-        for title in unique_titles:
+        for index, title in enumerate(unique_titles):
             job_name = title
-            job_list_html += f'<button class="job-button"><div class="svg-img"></div>{job_name}</button>'
+            job_list_html += f'<button class="job-button">{job_name}</button>'
         job_list_html += '</ul>'
 
         results_html = Markup(f"{job_list_html}")
@@ -197,7 +197,7 @@ def format_for_html(clicked_items=None):
     if clicked_items:
         number_of_tables = len(clicked_items)
     else:
-        number_of_tables = largest_position_number()
+        number_of_tables = 1
 
     titles = []
     contents = []

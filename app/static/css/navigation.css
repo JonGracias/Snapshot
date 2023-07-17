@@ -1,4 +1,4 @@
-.drag-container {
+.displayContainer {
     position: relative;
     display: flex;
     padding: 0;
@@ -6,129 +6,152 @@
     border-radius: 10px;
     z-index: 0;
     width: 100%;
-    flex-direction: row;
-  }
-  .docTables {
-    position: relative;
-    width: 100%;
     height: 100%;
-    overflow: auto;
-    border: 1px solid white;
-  }
-  
-  .docTablesInner {
-    position: absolute;
-    width: 100%;
-    height: 100%; /* Set a specific height for scrolling */
-    overflow: auto; /* Enable scrolling */
-  }
-  
-  .docTablesInner.hide {
-    opacity: 0;
-    display: none;
-    transition: opacity 0.01s ease-out;
-  }
-  
-  .tables {
-    position: relative;
-    width: 100%;
-    min-width: 100%;
-    height: 100%;
-  }
-  
-  .dataframe {
-    height: 100%;
-    position: relative;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  thead{
-    position: sticky;
-    top: 0;
-    background-color: rgba(16, 137, 211, 0.651);
-    color: white;
-  }
-  
-  tbody{
-    overflow-y: auto;
-  }
-  
-  
-  th,
-  td {
-    text-align: center;
-    word-wrap: break-word;
-    padding: 5px;
-    font-size: 12px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }  
-    
-  
-  .titlesContainer {
-    position: relative;
-    display: flex;
     flex-direction: row;
-    padding: 0;
-    white-space: nowrap;
-    height: 3rem;
-  }
-  
-  .countContainer {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    padding-right: 3rem;
-    white-space: nowrap;
-  }
-  
-  .dateSelector{
-    position: absolute;
-    transition: all 0.5s ease-in-out;
-    list-style: none;
-    top: 2rem;
-    left: 1rem;
-    width: 200px;
-  }
-    
-  .docTitles {
-    position: absolute;
-    transition: all 0.5s ease-in-out;
-    list-style: none;
-    top: 0;
-    left: 1rem;
-    width: 100%;
-    overflow: auto;
-  }
-  
-  .dates,
-  .titles {
-    position: relative;
-    width: 100%;
-    opacity: 1;
-    transition: opacity 0.25s ease-out;
-  }
-    
-  .dates.hide,
-  .titles.hide {
-    display:none;
-    opacity: 0;
-    transition: opacity 0.25s ease-out;
-  }
-
+}
+.docTables {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  border: 1px solid white;
+}
+.docTablesInner {
+  display: none;
+  transition: opacity 0.01s ease-out;
+}
+.docTablesInner.show {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.01s ease-out;
+  overflow: auto;
+}
+.tables {
+  position: relative;
+  width: 100%;
+  min-width: 100%;
+  height: 100%;
+}
+.dataframe {
+  height: 100%;
+  position: relative;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+thead{
+  position: sticky;
+  top: 0;
+  background-color: rgba(16, 137, 211, 0.651);
+  color: white;
+}
+tbody{
+  overflow-y: auto;
+}
+th,
+td {
+  text-align: center;
+  word-wrap: break-word;
+  font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 5px;
+  overflow: hidden;
+}  
 .scrollerLeft,
 .scrollerRight {
   position: relative;
   background-color: transparent;
-  height: 400px;
+  height: 100%;
   border-radius: 0px;
   border: none;
   width: 50px;
   font-size: 2em;
   z-index: 3;
+}    
+ 
+
+.titlesContainer {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  white-space: nowrap;
+  height: 45px;
+}
+.titlesContainer h2 {
+  margin: 0;
+}
+.datesContainer {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  white-space: nowrap;
+  height: 20px;
+}
+.docCounter {
+  display: flex;
+  position: relative;
+  border-radius: 10px;
+  font-size: medium;
+  color: var(--lofi-font-color);
+  background: var(--card-background-color);
+  z-index: 99;
+}
+.counts {
+  display: block;
+  width: 1em;
+  height: 0.5em;
+  background-color: grey;
+  border-radius: 8px;
+}
+.counts:first-of-type {
+  margin-right: 0.5em; /* Adjust the left margin of the first card */
+  margin-left: 0.5em;
+}
+
+.counts.lighter {
+  background-color: white;
+}
+
+.countContainer {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  padding-right: 3rem;
+  white-space: nowrap;
+  height: 10px;
+}
+.dateSelector{
+  position: absolute;
+  transition: all 0.5s ease-in-out;
+  list-style: none;
+  top: 0;
+  left: 1rem;
+  width: 200px;
+}
+.docTitles {
+  position: absolute;
+  transition: all 0.5s ease-in-out;
+  list-style: none;
+  top: 0;
+  left: 1rem;
+  width: 90%;
+  overflow: auto;
+}
+.dates,
+.titles {
+  display:none;
+  transition: opacity 0.25s ease-out;
+}
+.dates.show,
+.titles.show {
+  display:block;
+  position: relative;
+  width: 80%;
+  transition: opacity 0.25s ease-out;
 }

@@ -10,75 +10,86 @@
         <title></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="/static/css/navigation.css">
     </head>
     <body>
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-         
-            <div id='titlesContainer' class='titlesContainer'>
-              {% for i in range(titles|length) %}
-              <div class="docTitles">
-                  <div class="titles 
-                  {% if titles|length > 1 and i != 0 %}
-                  hide
-                  {% endif %}"
-                  position="{{ positions[i] }}">
-                      <h2>{{ titles[i] }}</h2>
-                  </div>
-              </div> 
-              {% endfor %}
-            </div>
-            <div id='dateContainer' class='titlesContainer'>
-              <select id="dateSelector" onchange="updateCurrentDate()" class="dateSelector">
-                {% for i in range(titles|length) %}
-                  <option class="dates" value="{{ dates[i] }}" position="{{ positions[i] }}">{{ dates[i] }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div id='countContainer' class='countContainer' style="justify-content:flex-end">
-              {% for i in range(number_of_tables) %}
-              <div class="docCounter">
-                <div class="counts">
-                </div>
+
+        <div id='titlesContainer' class='titlesContainer'>
+          {% for i in range(titles|length) %}
+          <div class="docTitles">
+              <div class="titles 
+              {% if i == 0 %}
+              show
+              {% endif %}"
+              position="{{ positions[i] }}">
+                  <h2>{{ titles[i] }}</h2>
               </div>
-              {% endfor %}
-            </div>
-            <div class='drag-container '>
-              <button class="scrollerLeft" data-length="{{ number_of_tables }}" onclick="scrollLeftX()">
-                &lt;
-              </button>
-              <div class="docTables">
-                {% for i in range(titles|length) %}
-                <div class="docTablesInner
-                {% if titles|length > 1 and i != 0 %}
-                hide
-                {% endif %}"
-                data-date="{{ dates[i] }}"
-                position="{{ positions[i] }}">
-                  <div class ="tables" >
-                    {{ table_htmls[i] | safe }}
-                  </div>  
-                </div> 
-                {% endfor %}
-              </div>
-              <button class="scrollerRight" data-length="{{ number_of_tables }}" onclick="scrollRight()">
-                &gt;
-              </button>
-            </div>
+          </div> 
+          {% endfor %}
+        </div>
 
         
+        <div id='dateContainer' class='datesContainer'>
+          <select id="dateSelector" onchange="updateCurrentDate()" class="dateSelector">
+            {% for i in range(titles|length) %}
+              <option class="dates show" value="{{ dates[i] }}" position="{{ positions[i] }}">{{ dates[i] }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+
+        <div id='countContainer' class='countContainer' style="justify-content:flex-end">
+          {% for i in range(number_of_tables) %}
+          <div class="docCounter">
+            <div class="counts
+            {% if i == number_of_tables - 1 %}
+              lighter
+            {% endif %}">
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+
+
+        <div class='displayContainer '>
+          <button class="scrollerLeft" onclick="scrollLeftC()">
+            &lt;
+          </button>
+
+          <div class="docTables">
+            {% for i in range(titles|length) %}
+            <div class="docTablesInner
+            {% if i == 0 %}
+            show
+            {% endif %}"
+            data-date="{{ dates[i] }}"
+            position="{{ positions[i] }}">
+              <div class ="tables" >
+                {{ table_htmls[i] | safe }}
+              </div>  
+            </div> 
+            {% endfor %}
+          </div>
+          <button class="scrollerRight" onclick="scrollRightC()">
+            &gt;
+          </button>
+        </div>
+        
         <!-- use version 0.19.3 -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script type="text/javascript" src="/static/js/load.js"></script>
-        <script type="text/javascript" src="/static/js/scrollButtons.js"></script>
         <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            setDataLength({{ number_of_tables }});
-            setCurrentItem(0);
-        });
+          setDataLength({{ number_of_tables }});
+          function scrollLeftC() {
+              updateCurrentDate();
+              scrollLeftX();
+          };
+          function scrollRightC() {
+              updateCurrentDate();
+              scrollRight();
+          };
         </script>
     </body>
 </html>

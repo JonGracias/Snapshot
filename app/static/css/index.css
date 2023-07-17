@@ -1,81 +1,128 @@
-.sectionContainer {
+.headerSection{
+  background-color: red; 
+  padding-left: 20px; 
+  padding-right: 20px;
+  height: 100px;
+}
+
+.hero{
   display: flex;
-  align-items: center;
   position: relative;
   flex-direction: row;
-}
-  
-.navContainer {
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  padding: 20px;
+  height: calc(100vh - 110px);
   overflow: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: transparent transparent;
-  scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
+  border: 1px solid white;
 }
-
-.docCounter {
+.fileBrowser{
   display: flex;
   position: relative;
-  border-radius: 10px;
-  font-size: medium;
-  color: var(--lofi-font-color);
-  background: var(--card-background-color);
-  z-index: 99;
-  }
-
-.counts {
-  display: block;
-  width: 1em;
-  height: 0.5em;
-  background-color: grey;
-  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: calc(100vh - 150px);
+  margin: 10px;
+  transition: all ease-in-out;
+}
+.browser {
+  display: flex;
+  position:relative;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+.popup {
+  display: none;
+  position:absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  overflow: scroll;
 }
 
-.counts:first-of-type {
-  margin-right: 0.5em; /* Adjust the left margin of the first card */
-  margin-left: 0.5em;
+
+
+.workContainer{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.tableDisplay {
+  overflow: auto;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+.divider {
+  height: 2px; /* Set the height of the divider */
+  background-color: #ddd;
+  cursor: row-resize;
+}
+.pipeline {
+  overflow: auto;
+  resize: vertical;
+
 }
 
-.counts.lighter {
-  background-color: white;
+
+
+
+
+
+
+
+
+
+
+
+
+.navi {
+  display: flex;
+  position:relative;
+  justify-content: flex-start;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
-
-
 
 .input-sectionContainer {
   display: flex;
-  align-items: center;
   position: relative;
   flex-direction: column;
+  grid-template-columns: 50px 1fr; 
+  align-items: center;
+  gap: 10px;
+  overflow:hidden;
+  margin: 10px;
 }
-
 .grid-container {
-  margin: 20px;
-  padding: 20px;
   display: grid;
   grid-template-columns: 85px 125px 1fr 1fr;
   grid-gap: 10px;
   border: 2px solid white;
   width: 90%;
 }
-
 .grid-item {
   display: flex;
   border: 1px solid gray;
   padding-left: 5px;
   justify-content: center;
 }
-
 .groupContainer {
   border: 2px solid white;
   padding: 20px;
   width: 90%;
-}
+  height: 350px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
 
+}
 .lineContainer {
   border-bottom: 2px solid white;
   width: 100%;
@@ -92,30 +139,12 @@
   border-left: 1px solid gray;
   padding-left: 5px;
 }
-
-
-  
-span {
-  margin-top: 15px;
-  margin-left: 10px;
-}
-  
 .buttonContainer {
   display: flex;
   flex-direction: row;
+  width:100%;
   gap: 5px;
 }
-
-.popup {
-  display: none;
-  position:relative;
-  width: 100%;
-  height: 100%;
-  border: 1px solid #ccc;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  overflow: scroll;
-}
-
 .inputContainer{
   display: flex;
   flex-direction: row;
@@ -123,16 +152,6 @@ span {
   padding-right:3rem;
   gap: 5px;
 }
-
-.display{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 55vh;
-  border: 1px solid #ccc;
-}
-  
 /* Media Queries for Responsive Design */
 /* Mobile View */
 @media (max-width: 768px) {
@@ -140,13 +159,11 @@ span {
     margin: 10px;
     grid-template-columns: 85px 2fr 3fr 3fr;
   }
-
   .drag-container {
     height: 400px;
     max-width: 100%;
   }
 }
-
 /* Tablet and Desktop View */
 @media (min-width: 769px) {
   .drag-container {

@@ -1,40 +1,32 @@
-$(document).ready(function() {
-    var save = $('#save');
-    var open = $('#openSave');
-    var close = $('#closeSave');
+var save = $('#save');
+var open = $('#openSave');
+var close = $('#closeSave');
 
-    close.hide();
+function startSave(){
+  close.hide();
+}
+function openSave() {
+  save.show();
+  open.hide();
+  close.show();
+  saveDocs();
+};
 
-  
-    open.click(function() {
-      closeOthers();
-      save.show();
-      open.hide();
-      close.show();
-      saveDocs();
-    });
-  
-
-    function closeOthers(){
-      $('#load').hide();
-      $('#navigation').hide();
+function saveDocs() {
+  $.ajax({
+    type: 'GET',  
+    url: '/save',
+    success: function(response) {
+      save.html(response);
     }
-
-
-    function saveDocs() {
-      $.ajax({
-        type: 'GET',  
-        url: '/save',
-        success: function(response) {
-          save.html(response);
-        }
-      });
-    }
-  
-    close.click(function() {
-      save.hide();
-      close.hide();
-      open.show();
-    });
   });
+}
+
+function closeSave() {
+  save.hide();
+  close.hide();
+  open.show();
+};
+
+
   

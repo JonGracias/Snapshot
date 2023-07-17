@@ -32,3 +32,15 @@ body{
   .fileItem:last-child {
     margin: 0 auto;
   }
+
+  .save{
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .saveButtons{
+    display: block;
+    flex-direction: row;
+    gap: 10px;
+  }
