@@ -11,10 +11,50 @@
   flex-direction: row;
   height: calc(100vh - 110px);
   overflow: hidden;
-  border: 1px solid white;
+  z-index: 0;
 }
-.fileBrowser{
+
+.openCloseButtons {
+  display: block;
+  position: relative;
+  width: 30px;
+}
+
+#searchInput {
+  width: 100%;
+}
+
+.openBrowser.show {
+  display: block;
+  position: absolute;
+  background: none;
+  border: none;
+  font-size: 30px;
+  top: -5px;
+  left: -5px;
+}
+
+.openBrowser{
+  display: none;
+}
+
+.closeBrowser {
+  display: block;
+  position: absolute;
+  background: none;
+  border: none;
+  font-size: 30px;
+  top: -5px;
+  left: -5px;
+}
+
+.closeBrowser.hide{
+  display: none;
+}
+
+.fileBrowser {
   display: flex;
+  flex-direction: column;
   position: relative;
   justify-content: center;
   align-items: center;
@@ -22,7 +62,21 @@
   height: calc(100vh - 150px);
   margin: 10px;
   transition: all ease-in-out;
+  overflow: hidden;
 }
+
+
+
+#searchForm {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
 .browser {
   display: flex;
   position:relative;
@@ -31,9 +85,10 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   overflow: hidden;
 }
+
 .popup {
   display: none;
-  position:absolute;
+  position:relative;
   top: 0;
   left: 0;
   width: 100%;
@@ -43,8 +98,6 @@
   overflow: scroll;
 }
 
-
-
 .workContainer{
   display: flex;
   flex-direction: column;
@@ -53,32 +106,22 @@
   overflow: hidden;
 }
 .tableDisplay {
-  overflow: auto;
+  overflow: hidden;
   resize: vertical;
   margin-bottom: 10px;
+  height: 50%;
+  max-height: 75%;
+  min-height: 15%;
 }
 .divider {
   height: 2px; /* Set the height of the divider */
   background-color: #ddd;
-  cursor: row-resize;
 }
 .pipeline {
-  overflow: auto;
-  resize: vertical;
+  overflow: hidden;
+  flex: 1 1 0%;
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 .navi {
   display: flex;
@@ -94,11 +137,11 @@
   display: flex;
   position: relative;
   flex-direction: column;
-  grid-template-columns: 50px 1fr; 
   align-items: center;
   gap: 10px;
   overflow:hidden;
   margin: 10px;
+  height: 100%;
 }
 .grid-container {
   display: grid;
@@ -117,11 +160,10 @@
   border: 2px solid white;
   padding: 20px;
   width: 90%;
-  height: 350px;
+  height: 100%;
   overflow-x: hidden;
   overflow-y: scroll;
   scroll-behavior: smooth;
-
 }
 .lineContainer {
   border-bottom: 2px solid white;
@@ -134,7 +176,6 @@
   grid-gap: 10px;
   width: 100%;
 }
-
 .lineItem {
   border-left: 1px solid gray;
   padding-left: 5px;

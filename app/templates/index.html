@@ -29,16 +29,45 @@
 
       <div class="hero">
 
-        <div class="fileBrowser">
-          <div id='load' class='browser'></div>
-          <div id='save' class="popup"></div>
+
+
+
+
+
+
+
+       
+
+        <!--Inside the fileBrowser -->
+        <div class="fileBrowser" id="fileBrowser">
+          <form id="searchForm">
+            <input type="text" id="searchInput" placeholder="Search...">
+            <input type="submit" value=">">
+          </form>
+          <div id="load" class="browser"></div>
+          <div id="save" class="popup"></div>
+          <div class="saveButton">
+            <button id="openSave" onclick="openSave()">Upload File</button>
+            <button id="closeSave" onclick="closeSave()">Close</button>
+          </div>
         </div>
+
+        <!--outside of the fileBrowser will not show until fileBrowser is closed-->
+        <div class="openCloseButtons">
+          <button id="openBrowser" class="openBrowser" onclick='openSidebar()'>&gt;</button>
+          <button id="closeBrowser" class="closeBrowser" onclick='closeSidebar()'>&lt;</button>
+        </div>
+
+
+
+
+
 
         <div class="workContainer">
           <div class="tableDisplay">
             <div id='navigation' class="navi"></div>
           </div>
-          <div class="divider"></div>
+          <div class="divider" id="dragMe"></div>
           <div class="pipeline">
             <div class='input-sectionContainer'>
               <div class='grid-container'>

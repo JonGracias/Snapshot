@@ -13,16 +13,7 @@
 
   </head>
   <body>
-    <main style="background-color: black; padding: 20px;">
-
-      <!--[if lt IE 7]>
-        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-      <![endif]-->
-        <header style="background-color: red; padding-left: 20px; padding-right: 20px;">
-            <div class='sectionContainer'>
-                <h2>Upload</h2>
-            </div>
-        </header>
+    <main>
         <div class='fileUploader'>
             <h1>File Upload</h1>
             <p>Drag and drop a file here</p>
@@ -30,16 +21,11 @@
                 <input id="fileInput" type="file" name="file" class="fileItem">
                 <label for="dateInput" class="fileItem">Date (MM/YYYY):</label>
                 <input type="text" id="dateInput" name="dateInput" pattern="\d{2}/\d{4}" required class="fileItem">
-
-                <div class="saveButtons">
-                    <input type="submit" value="Upload" class="fileItem">
-     
-                    <button id='closeSave' onclick="closeSave()">Close</button>
-                </div>
-              </form>
+                <input type="submit" value="Upload" class="fileItem">
+            </form>
         </div>
       <!-- use version 0.19.3 -->
-
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </main>
   </body>
 </html>

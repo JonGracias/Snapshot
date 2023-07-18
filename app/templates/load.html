@@ -16,15 +16,8 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
         <div class='searchContainer' onDrag="onDrag(event)" onDrop="onDrop(event)">
-            <form id="searchForm">
-                <input type="text" id="searchInput" placeholder="Search...">
-                <input type="submit" value=">">
-            </form>
             <div class='results'>
                 {{ results_html }}
-            </div>
-            <div class="saveButton">
-                <button id='openSave' onclick="openSave()" >Upload File</button>
             </div>
         </div>
         <!-- use version 0.19.3 -->

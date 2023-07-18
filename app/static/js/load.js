@@ -6,15 +6,19 @@ var search = $('#searchForm');
 var input = $('#searchInput');
 
 
-search.submit(function(event) {
-  event.preventDefault();
-  var query = input.val();
-  if (query) {
-    loadSearchResults(query);
-  } else {
-    browse();
-  }
+$(document).ready(function() {
+  search.submit(function(event) {
+    event.preventDefault();
+    console.log('i is searching -onSubmit');
+    var query = input.val();
+    if (query) {
+      loadSearchResults(query);
+    } else {
+      browse();
+    }
+  }); 
 });
+
 
 
 // For load.html where the documents are listed.

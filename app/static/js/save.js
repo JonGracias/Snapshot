@@ -1,16 +1,16 @@
 var save = $('#save');
 var open = $('#openSave');
 var close = $('#closeSave');
+var dateInput = $('#dateInput');
+var loadBrowser = $('#load')
 
-function startSave(){
-  close.hide();
-}
 function openSave() {
+  loadBrowser.hide();
   save.show();
   open.hide();
   close.show();
   saveDocs();
-};
+}
 
 function saveDocs() {
   $.ajax({
@@ -23,10 +23,10 @@ function saveDocs() {
 }
 
 function closeSave() {
+  loadBrowser.show();
   save.hide();
   close.hide();
   open.show();
-};
-
-
-  
+  // Disable the dateInput field
+  dateInput.prop('disabled', true);
+}

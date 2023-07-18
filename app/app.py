@@ -10,6 +10,7 @@ import dotenv
 import flask
 import json
 import os
+import re
 
 dotenv.load_dotenv()
 app = Flask(__name__)
@@ -47,8 +48,7 @@ def navigation():
 
     elif request.method == 'GET':
         date = datetime.now()
-        formatted_date = date.strftime("%M / %d / %Y")
-
+        formatted_date = date.strftime("%m / %d / %Y")
         titles = [' Welcome']
         table_htmls = ['Message to users']
         dates = [formatted_date]
@@ -65,14 +65,14 @@ def navigation():
 @app.route('/browseDB', methods=['GET'])
 @cache.cached(timeout=300)
 def browse():
-    results_html = format_for_browse()
-    
+    query = ''
+    results_html = format_for_browse(query)
     return render_template('load.html', results_html=results_html)
 
 @app.route('/search', methods=['POST'])
 def search_results():
     query = request.form['query']
-    results_html = generate_search_results(query)
+    results_html = format_for_browse(query)
     return render_template('load.html', results_html=results_html)
 
 @app.route('/upload', methods=['POST'])
@@ -135,43 +135,16 @@ class Spreadsheet:
                     'content': '{\n    "Sheet1": [{\n"Load": "To Get",\n"Data": "Started"\n}]}',
                 }
             ]
-    @staticmethod
-    def getNames():
-        documents = mongo.db[collection_name].find({}, {"name": 1, "_id": 0})
-        names = [doc["name"] for doc in documents]
-        
-        if names:
-            return names
-        else:
-            print("No documents found or missing 'name' field")
-            return ['No Data Found']
 
-        
-def generate_search_results(query):
-    results = mongo.db[collection_name].find({'name': query})
-    first_result = next(results, None)
-    if first_result and 'content' in first_result:
-        job_list_html = '<ul>'
-        for result in results:
-            job_name = result.get('name', '')
-            job_date = result.get('date', '')
-            job_list_html += f'<li>Name: {job_name}, Date: {job_date}</li>'
-        job_list_html += '</ul>'
-
-        results_html = Markup(f'<h1>Search Results for "{query}":</h1>{job_list_html}')
+def format_for_browse(query):
+    if query:
+        regex_query = re.compile(f'.*{query}.*', re.IGNORECASE)
+        documents = mongo.db[collection_name].find({'name': regex_query})
     else:
-        results_html = Markup(f'No results found for "{query}".')
-
-    return results_html
-
-def format_for_browse():
-    data = Spreadsheet.getNames()
+        documents = mongo.db[collection_name].find({}, {"name": 1, "_id": 0})
     
-    titles = set()
-
-    for document in data:
-        title = document  # Access the title directly
-        titles.add(title)
+    data = [doc["name"] for doc in documents]
+    titles = set(data)
     
     unique_titles = list(titles)
 
@@ -182,10 +155,13 @@ def format_for_browse():
             job_list_html += f'<button class="job-button">{job_name}</button>'
         job_list_html += '</ul>'
 
-        results_html = Markup(f"{job_list_html}")
+        if query:
+            results_html = Markup(f'<p>Search Results for "{query}":</p>{job_list_html}')
+        else:
+            results_html = Markup(f"{job_list_html}")
     else:
-        results_html = Markup(f'Nothing in Database.')
-    
+        results_html = Markup('Nothing in Database.' if not query else f'No results found for "{query}".')
+
     return results_html
 
 
