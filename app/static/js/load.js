@@ -5,7 +5,6 @@ var submit = $('#submit');
 var search = $('#searchForm');
 var input = $('#searchInput');
 
-
 $(document).ready(function() {
   search.submit(function(event) {
     event.preventDefault();
@@ -16,10 +15,8 @@ $(document).ready(function() {
     } else {
       browse();
     }
-  }); 
+  });
 });
-
-
 
 // For load.html where the documents are listed.
 function browse() {
@@ -43,7 +40,7 @@ function loadSearchResults(query) {
     data: { query: query },
     success: function(response) {
       load.html(response);
-      attachClickHandlers(); 
+      attachClickHandlers();
       close.show();
     }
   });
@@ -52,15 +49,12 @@ function loadSearchResults(query) {
 function attachClickHandlers() {
   $('.results').on('click', '.job-button', function() {
     var itemName = $(this).text().trim();
-
     var index = clickedItems.indexOf(itemName);
-
     if (index === -1) {
       clickedItems.push(itemName);
     } else {
       clickedItems.splice(index, 1);
     }
-
     $(this).toggleClass('selected');
     navChannel(clickedItems);
     console.log(clickedItems);
@@ -71,15 +65,9 @@ function isQuery(query) {
   return Array.isArray(query) && query.length > 0;
 }
 
-
-
-function navChannel(query){
-  console.log(query)
-  if (isQuery(query)) {
-    setNavigation(query);
-  } else {
-    loadNavigation();
-  }
+function navChannel(query) {
+  console.log(query);
+  setNavigation(query);
 }
 
 // When a user clicks on an item in load.html
@@ -90,19 +78,7 @@ function setNavigation(query) {
     data: { clickedItems: JSON.stringify(query) },
     success: function(response) {
       $('#navigation').html(response);
+      console.log(response);
     }
   });
 }
-
-// When a user first navigates or when there is no input from load.html
-function loadNavigation() {
-  $.ajax({
-  type: 'GET',
-  url: '/navigation', 
-  success: function(response) {
-    $('#navigation').html(response);
-  }
-  });
-}
-
-

@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request,redirect,jsonify
+from collections import defaultdict 
 from flask_pymongo import PyMongo
 from operator import itemgetter
 from flask_caching import Cache
@@ -33,37 +34,18 @@ collection_name = f"{current_user}"
 def save():
     return render_template('save.html')
 
-@app.route('/navigation', methods=['GET', 'POST'])
+@app.route('/navigation', methods=['POST'])
 def navigation():
-    if request.method == 'POST':
-        clicked_items = request.form.get('clickedItems')
+    clicked_items = request.form.get('clickedItems')
+    if clicked_items:
         clicked_items = json.loads(clicked_items)
-        titles, table_htmls, dates, number_of_tables, positions = format_for_html(clicked_items)
-        return render_template('navigation.html',
-                                titles=titles,
-                                table_htmls=table_htmls,
-                                dates=dates,
-                                number_of_tables=number_of_tables,
-                                positions=positions)
+    else:
+        clicked_items = ''
+    result = format_for_html(clicked_items)
+    return render_template('navigation.html', result=result)
 
-    elif request.method == 'GET':
-        date = datetime.now()
-        formatted_date = date.strftime("%m / %d / %Y")
-        titles = [' Welcome']
-        table_htmls = ['Message to users']
-        dates = [formatted_date]
-        number_of_tables = 0
-        positions = ['0']
-
-        return render_template('navigation.html',
-                                titles=titles,
-                                table_htmls=table_htmls,
-                                dates=dates,
-                                number_of_tables=number_of_tables,
-                                positions=positions,)
 
 @app.route('/browseDB', methods=['GET'])
-@cache.cached(timeout=300)
 def browse():
     query = ''
     results_html = format_for_browse(query)
@@ -84,10 +66,10 @@ def upload():
     json_data = format_workbook(workbook)
 
     for sheet_name, sheet_data in json_data.items():
-        position_number = generate_position_number(sheet_name)
-        name = sheet_name
+        position = generate_position_number(sheet_name)
+        title = sheet_name
         formatted_data = json.dumps({sheet_name: sheet_data}, indent=4)
-        Spreadsheet.save(formatted_data, name, date, position_number)
+        Spreadsheet.save(formatted_data, title, date, position)
     return flask.redirect(flask.url_for('index'))
 
 @app.route('/', defaults={'path': ''})
@@ -99,54 +81,74 @@ def index(path):
 #---------------------------------Functions and Classes----------------------#
 class Spreadsheet:
     @staticmethod
-    def save(content, name, date, position_number):
-        id = f"{name}-{date}"
+    def save(table, title, date, position):
+        id = f"{title}-{date}"
         timestamp = datetime.now()
         filter_query = {"_id":id}
         existing_document = mongo.db[collection_name].find_one(filter_query)
 
         if existing_document:
-            update_operation = {"$set": {"content": content}}
+            update_operation = {"$set": {"table": table}}
             mongo.db[collection_name].update_one(filter_query, update_operation)
         else:
-            data = {"_id":id, "name": name, "position_number": position_number, "date":date, "timestamp": timestamp, "content": content}
+            data = {"_id":id, "title": title, "position": position, "date":date, "timestamp": timestamp, "table": table}
             mongo.db[collection_name].insert_one(data)
 
     @staticmethod
     def get(clicked_items=None):
+        print('clicked Items: ' + str(clicked_items))
         if clicked_items:
             # Retrieve MongoDB documents based on clicked_items
             documents = list(
-                mongo.db[collection_name].find({'name': {'$in': clicked_items}})
+                mongo.db[collection_name].find({'title': {'$in': clicked_items}})
             )
         else:
             documents = list(mongo.db[collection_name].find())
 
-        if documents and 'content' in documents[0]:
+        # Create a defaultdict to store the occurrence count of each unique title
+        doc = sorted(documents, key=itemgetter('position'), reverse=True)
+        title_counts = 0
+        isNewTitle = []
+
+        for document in doc:
+            title = document['title']
+            # Increment the count only on the first occurrence of the title
+            print('title: ' + title)
+            print(isNewTitle)
+
+            if title not in isNewTitle:
+                title_counts += 1
+                print('After If title: ' + title)
+            # Add the index number to the document dictionary
+            document['index'] = title_counts-1
+            isNewTitle.append(title)
+
+        if documents and 'table' in documents[0]:
             return documents
         else:
-            print("No documents found or missing 'content' field")
+            print("No documents found or missing 'table' field")
             return [
                 {
                     '_id': 'None',
-                    'name': 'No Data Found',
-                    'position_number': 0,
+                    'title': 'No Data Found',
+                    'position': 0,
                     'date': '00/0000',
-                    'content': '{\n    "Sheet1": [{\n"Load": "To Get",\n"Data": "Started"\n}]}',
+                    'table': '{\n    "Sheet1": [{\n"Load": "To Get",\n"Data": "Started"\n}]}',
                 }
             ]
+
 
 def format_for_browse(query):
     if query:
         regex_query = re.compile(f'.*{query}.*', re.IGNORECASE)
-        documents = mongo.db[collection_name].find({'name': regex_query})
+        documents = mongo.db[collection_name].find({'title': regex_query})
     else:
-        documents = mongo.db[collection_name].find({}, {"name": 1, "_id": 0})
+        documents = mongo.db[collection_name].find({}, {"title": 1, "_id": 0})
     
-    data = [doc["name"] for doc in documents]
+    data = [doc["title"] for doc in documents]
     titles = set(data)
     
-    unique_titles = list(titles)
+    unique_titles = sorted(list(titles))
 
     if unique_titles:
         job_list_html = '<ul>'
@@ -165,70 +167,67 @@ def format_for_browse(query):
     return results_html
 
 
+def format_for_html(clicked_items):
+    # Initialize title_counts as an empty defaultdict for each request
+    title_counts = defaultdict(int)
 
-
-def format_for_html(clicked_items=None):
-    data = Spreadsheet.get(clicked_items)
-    sorted_data = sorted(data, key=itemgetter('position_number', 'date'), reverse=True)
     if clicked_items:
-        number_of_tables = len(clicked_items)
+        data = Spreadsheet.get(clicked_items)
+        doc = sorted(data, key=itemgetter('position', 'date'), reverse=True)
+
+
+        for document in doc:
+            title = document['title']
+            
+            # Increment the count only on the first occurrence of the title
+            if title not in title_counts:
+                title_counts[title] += 1
+
+            # Add the index number to the document dictionary
+            document['bindex'] = title_counts[title] - 1
+
+
+            table = document.pop('table')
+            content_dict = json.loads(table)
+
+            content_key = next(iter(content_dict.keys()))
+            if isinstance(content_dict[content_key], str):
+                transformed_content = [{k: v.replace('\n', '')} for k, v in json.loads(content_dict[content_key]).items()]
+            else:
+                transformed_content = [
+                    {k: v.replace('\n', '') for k, v in entry.items()} for entry in content_dict[content_key]
+                ]
+
+            if isinstance(transformed_content, str):
+                df = pd.DataFrame()
+            else:
+                df = pd.DataFrame(transformed_content)
+
+            document['table'] = df.to_html(index=False)
+
     else:
-        number_of_tables = 1
+        date = datetime.now()
+        formatted_date = date.strftime("%m / %d / %Y")
+        doc = [{'title': 'Welcome', 'date': formatted_date, 'position': 'Greeting', 'table': 'table','index': 0}]
 
-    titles = []
-    contents = []
-    dates = []
-    positions = []
+    return doc
 
-    for document in sorted_data:
-        title = document.pop('name')
-        titles.append(title)
-
-        date = document.pop('date')
-        dates.append(date)
-
-        position = document.pop('position_number')
-        positions.append(position)
-
-        content = document.pop('content')
-        content_dict = json.loads(content)
-
-        content_key = next(iter(content_dict.keys()))
-        if isinstance(content_dict[content_key], str):
-            transformed_content = [{k: v.replace('\n', '')} for k, v in json.loads(content_dict[content_key]).items()]
-        else:
-            transformed_content = [
-                {k: v.replace('\n', '') for k, v in entry.items()} for entry in content_dict[content_key]
-            ]
-        contents.append(transformed_content)
-
-    dfs = []
-    for content in contents:
-        if isinstance(content, str):
-            df = pd.DataFrame()
-        else:
-            df = pd.DataFrame(content)
-        dfs.append(df)
-
-    table_htmls = [df.to_html(index=False) for df in dfs]
-
-    return titles, table_htmls, dates, number_of_tables, positions
 
 def generate_position_number(sheet_name):
-    result = mongo.db[collection_name].find_one({'name': sheet_name})
+    result = mongo.db[collection_name].find_one({'title': sheet_name})
 
     if result:
-        print(result['name']) 
-        position_number = result['position_number']
+        print(result['title']) 
+        position = result['position']
     else:
         print('else')
-        position_number = largest_position_number()
+        position = largest_position_number()
 
-    return position_number
+    return position
 
 def largest_position_number():
     pipeline = [
-        {"$group": {"_id": None, "max_number": {"$max": "$position_number"}}},
+        {"$group": {"_id": None, "max_number": {"$max": "$position"}}},
         {"$limit": 1}
     ]
 

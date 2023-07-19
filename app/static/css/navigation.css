@@ -75,7 +75,6 @@ td {
   border: none;
   width: 50px;
   font-size: 2em;
-  z-index: 3;
 }    
  
 
@@ -106,7 +105,6 @@ td {
   font-size: medium;
   color: var(--lofi-font-color);
   background: var(--card-background-color);
-  z-index: 99;
 }
 .counts {
   display: block;

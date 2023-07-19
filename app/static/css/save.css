@@ -2,26 +2,27 @@ body{
   background-color:rgba(43, 43, 43, 0.24);
 }
 
-.sectionContainer {
-    display: flex;
-    align-items: center;
-    position: relative;
-    flex-direction: row;
-}
-
 .fileUploader {
     display: flex;
     position: relative;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    width: 100%;
+    top: 100px;
+    height: 100%;
 }
 
 .file {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .fileItem{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
   
   .fileItem:not(:last-child) {
