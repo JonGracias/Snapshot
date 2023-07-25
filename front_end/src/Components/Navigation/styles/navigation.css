@@ -1,0 +1,65 @@
+
+.tableDisplay {
+  overflow: hidden;
+  resize: vertical;
+  margin-bottom: 10px;
+  height: 50%;
+  max-height: 75%;
+  min-height: 25%;
+
+}
+.navi {
+  display: flex;
+  position:relative;
+  justify-content: flex-start;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+
+}
+
+.titlesContainer {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  white-space: nowrap;
+  height: 45px;
+}
+.titlesContainer h2 {
+  margin: 0;
+}
+
+.datesContainer {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  white-space: nowrap;
+  height: 20px;
+  margin: 5px;
+}
+
+  
+.countContainer {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  padding-right: 3rem;
+  white-space: nowrap;
+  height: 10px;
+  justify-content:flex-end;
+}
+
+.displayContainer {
+  position: relative;
+  display: flex;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  flex-direction: row;
+}

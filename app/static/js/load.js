@@ -66,7 +66,6 @@ function isQuery(query) {
 }
 
 function navChannel(query) {
-  console.log(query);
   setNavigation(query);
 }
 
@@ -78,7 +77,17 @@ function setNavigation(query) {
     data: { clickedItems: JSON.stringify(query) },
     success: function(response) {
       $('#navigation').html(response);
-      console.log(response);
+
+    }
+  });
+}
+
+function saveDocs() {
+  $.ajax({
+    type: 'GET',  
+    url: '/save',
+    success: function(response) {
+      save.html(response);
     }
   });
 }

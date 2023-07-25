@@ -1,0 +1,25 @@
+.counts {
+    display: block;
+    width: 1em;
+    height: 0.5em;
+    background-color: grey;
+    border-radius: 8px;
+  }
+  .counts:first-of-type {
+    margin-right: 0.5em; /* Adjust the left margin of the first card */
+    margin-left: 0.5em;
+  }
+  
+  .counts.lighter {
+    background-color: white;
+  }
+  
+
+  .docCounter {
+    display: flex;
+    position: relative;
+    border-radius: 10px;
+    font-size: medium;
+    color: var(--lofi-font-color);
+    background: var(--card-background-color);
+  }

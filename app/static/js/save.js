@@ -12,16 +12,6 @@ function openSave() {
   saveDocs();
 }
 
-function saveDocs() {
-  $.ajax({
-    type: 'GET',  
-    url: '/save',
-    success: function(response) {
-      save.html(response);
-    }
-  });
-}
-
 function closeSave() {
   loadBrowser.show();
   save.hide();

@@ -17,11 +17,11 @@
   overflow: auto;
   border: 1px solid white;
 }
-.docTablesInner {
+.docTablesInner.show {
   display: none;
   transition: opacity 0.01s ease-out;
 }
-.docTablesInner.show {
+.docTablesInner {
   display: block;
   position: absolute;
   width: 100%;
@@ -147,13 +147,13 @@ td {
   width: 90%;
   overflow: auto;
 }
-.dates,
+/* .dates,
 .titles {
   display:none;
   transition: opacity 0.25s ease-out;
-}
-.dates.show,
-.titles.show {
+} */
+.date.show,
+.titles{
   display:block;
   position: relative;
   width: 80%;

@@ -52,6 +52,10 @@
           </div>
         </div>
 
+
+
+
+        
         <!--outside of the fileBrowser will not show until fileBrowser is closed-->
         <div class="openCloseButtons">
           <button id="openBrowser" class="openBrowser" onclick='openSidebar()'>&gt;</button>
@@ -68,6 +72,8 @@
             <div id='navigation' class="navi"></div>
           </div>
           <div class="divider" id="dragMe"></div>
+
+          
           <div class="pipeline">
             <div class='input-sectionContainer'>
               <div class='grid-container'>
@@ -90,13 +96,17 @@
       <!-- use version 0.19.3 -->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
       <script type="text/javascript" src="/static/js/index.js"></script>
+      <script type="text/javascript" src="/static/js/navigation.js"></script>
       <script type="text/javascript" src="/static/js/save.js"></script>
-      <script type="text/javascript" src="/static/js/scrollButtons.js"></script>
       <script type="text/javascript" src="/static/js/thepipeline.js"></script>
       <script type="text/javascript" src="/static/js/load.js"></script>
+
+
       <script>
         window.onload = function() {
+          // Title, Date
           navChannel();
+          // Sidebar menu
           browse();
         };
       </script>
