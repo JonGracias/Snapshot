@@ -1,10 +1,9 @@
-import React, { useEffect, useContext } from 'react';
-import axios from 'axios';
+import React from 'react';
 import './styles/navigation.css';
 import Title from './Title';
 import Count from './Count';
 import DateComponent from './Date'; 
-import Display from './Display';
+import Tables from './Tables';
 
 function Navigation() {
 
@@ -23,7 +22,7 @@ function Navigation() {
             <Count />
           </div>
           <div className='displayContainer'>
-            <Display />
+            <Tables />
           </div>
         </div>
       </div>

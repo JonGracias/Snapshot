@@ -1,28 +1,52 @@
-import React, { useEffect, useContext } from 'react';
-import AppContext from '../Context/Context'; // Assuming you have your context here
+import React, { useContext, useEffect, useState } from 'react';
+import AppContext from '../Context/Context';
+import { DownOutlined , CalendarOutlined } from '@ant-design/icons';
+import { Dropdown, Menu } from 'antd';
 import './styles/date.css';
 
-
-
 function DateComponent() {
-    const { int_dates } = useContext(AppContext);
+  const { dates } = useContext(AppContext);
+  const [formattedDates, setFormattedDates] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
   
-    useEffect(() => {
-      console.log("int_dates in useEffect:", int_dates);
-    }, [int_dates]);
-  
-    return (
-      <>
-        <select id="dateSelector" className="dateSelector">
-          {int_dates.map((date, index) => (
-            <option key={index} className="dates show" value={index} data-date={date}>
-              {date} {/* Show the date as a formatted string */}
-            </option>
-          ))}
-        </select>
-      </>
-    );
-  }
-  
+
+  useEffect(() => {
+    setFormattedDates(dates[dates.length-1] || []);
+  }, [dates]);
+
+  const handleDateSelect = ({ key }) => {
+    setSelectedDate(formattedDates[key]); // Update the selected date based on the key
+    console.log(key)
+  };
+
+ 
+  const items = formattedDates.map((dateItem, index) => ({
+    label: dateItem, 
+    key: index.toString(), 
+    icon: <CalendarOutlined />, 
+  }));
+
+  const menuProps = {
+    items,
+    onClick: handleDateSelect,
+  };
+
+  return (
+    <>
+    <div className='dateDropDown'>
+      {formattedDates.length > 0 ? (
+        <Dropdown.Button
+          icon={<DownOutlined />}
+          menu={menuProps}
+        >
+          {selectedDate || formattedDates[0]} {/* Show selected date or "Select a Date" */}
+        </Dropdown.Button>
+      ) : (
+        <p>No available dates.</p>
+      )}
+      </div>
+    </>
+  );
+}
 
 export default DateComponent;

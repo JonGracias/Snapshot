@@ -1,32 +1,32 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState} from "react";
   
 const AppContext = createContext({});
   
   
 export const AppContextProvider = ({ children }) => {
-    const [ int_dict, setIntDict] = useState([])
-    const [ int_dates, setIntDates] = useState([])
+    const [ tables, setTables] = useState([])
+    const [ dates, setDates] = useState([])
     const [ number_of_tables, setNumberOfTables] = useState([])
     const [ currentIndex, setCurrentIndex ] = useState(0)
     const [ selectedButtons, setSelectedButtons ] = useState([]);
     const [ resultsList, setResultsList ] = useState([]);
     const [ title, setTitle ] = useState('');
+    const [collapsed, setCollapsed] = useState(false);
+    const [snapDisplay, setDisplay] = useState('');
+    const [currentDatIndex, setCurrentDateIndex] = useState(0)
 
-    useEffect(() => {
-        const currentDate = new Date();
-        setIntDates(['05/2020','05/2021'])
 
-      }, []);
-    
     return (
         <AppContext.Provider value={{
             currentIndex   , setCurrentIndex,
             selectedButtons, setSelectedButtons,
             resultsList    , setResultsList,
             title, setTitle,
-            int_dict, setIntDict,
-            int_dates, setIntDates,
+            dates, setDates,
             number_of_tables, setNumberOfTables,
+            collapsed, setCollapsed,
+            snapDisplay, setDisplay,
+            tables, setTables
         }}>
             {children}
         </AppContext.Provider>

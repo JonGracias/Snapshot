@@ -37,52 +37,23 @@ collection_name = f"{current_user}"
 def save():
     return render_template('save.html')
 
-# For Vanilla js Front End
-""" @app.route('/navigation', methods=['POST'])
-def navigation():
-    clicked_items = request.form.get('clickedItems')
-    if clicked_items:
-        clicked_items = json.loads(clicked_items)
-    else:
-        clicked_items = ''
-    int_dict, int_dates, number_of_tables  = format_for_html(clicked_items)
-    return render_template('navigation.html', 
-                           int_dict=int_dict, 
-                           int_dates=int_dates,
-                           number_of_tables=number_of_tables,
-                           ) """
-
 # For React
 @app.route('/navigation', methods=['POST'])
 def navigation():
     clicked_items = request.json.get('clickedItems', [])
-    int_dict, int_dates, number_of_tables = format_for_html(clicked_items)
+    titles, dates, tables = Spreadsheet.get(clicked_items)
     return jsonify(
-        int_dict=int_dict,
-        int_dates=int_dates,
-        number_of_tables=number_of_tables
+        titles=titles,
+        dates=dates,
+        tables=tables
     )
-
-
-
-
-# For Vanilla js Front End
-""" @app.route('/browseDB', methods=['GET'])
-def browse():
-    query = ''
-    results_html = format_for_browse(query)
-    return render_template('load.html', results_html=results_html) """
 
 # For React Front End
 @app.route('/browseDB', methods=['GET'])
 def browse():
     query = ''
     results_html = format_for_browse(query)
-    
-    # Create a dictionary to hold the response data
     response_data = results_html
-    
-    
     return jsonify(response_data)
 
 
@@ -129,10 +100,14 @@ class Spreadsheet:
             data = {"_id":id, "title": title, "position": position, "date":date, "timestamp": timestamp, "table": table}
             mongo.db[collection_name].insert_one(data)
 
+
+
+
+
     @staticmethod
     def get(clicked_items=None):
-        print('clicked Items: ' + str(clicked_items))
         if clicked_items:
+            print('Clicked Items Before: ' + str(clicked_items))
             # Retrieve MongoDB documents based on clicked_items
             documents = list(
                 mongo.db[collection_name].find({'title': {'$in': clicked_items}})
@@ -140,25 +115,60 @@ class Spreadsheet:
         else:
             documents = list(mongo.db[collection_name].find())
 
-        doc = sorted(documents, key=itemgetter('position'), reverse=True)
         title_counts = -1
         isNewTitle = []
+        titles = []
+        grouped_dates = []
+        dates = []  
+        grouped_tables = []
+        tables = []  
 
-        for document in doc:
+        # Function to get the index of a title in the clicked_items list
+        def get_clicked_items_index(title):
+            return clicked_items.index(title) if title in clicked_items else -1
+
+
+        # Custom sorting function to sort documents based on clicked_items order or by date
+        def custom_sort(document):
+            return get_clicked_items_index(document['title']), document['date']
+
+        # Sort documents based on clicked_items order or by date
+        documents.sort(key=custom_sort)
+
+        for document in documents:
             title = document['title']
+            date = document['date']
+            table = document['table']
 
             # Increment the count only on the first occurrence of the title
             if title not in isNewTitle:
                 title_counts += 1
+                # Append the title to the titles list
+                titles.append(title)
+                dates=[]
+                grouped_dates.insert(title_counts, dates)
+                table = []
+                grouped_tables.insert(title_counts, tables)
 
             # Add the index number to the document dictionary
             document['index'] = title_counts
 
+
             # Add current title to isNewTitle
+            dates.append(date)
+            tables.append(document['table'])
+            grouped_dates[title_counts]=dates
+            grouped_tables[title_counts]=tables
             isNewTitle.append(title)
 
+
+
         if documents and 'table' in documents[0]:
-            return documents
+            print('Titles after: ' + str(titles))
+            print('Grouped dates' + str(grouped_dates))
+            print('Grouped tables' + str(tables))
+            # Return the list of all titles
+            return titles, grouped_dates, tables[0]
         else:
             print("No documents found or missing 'table' field")
             return [
@@ -171,18 +181,19 @@ class Spreadsheet:
                 }
             ]
 
+
 def format_for_html(clicked_items):
-    print("clicke_items"+str(clicked_items))
+    int_dates = []
+    names = []
     if clicked_items:
-        number_of_tables = len(clicked_items)
+
         data = Spreadsheet.get(clicked_items)
-        doc = sorted(data, key=itemgetter('position', 'date'), reverse=True)
 
         # Create a defaultdict with list as default value
         int_dict = defaultdict(dict)
-        int_dates = defaultdict(list)
 
-        for document in doc:
+        """ for document in data:
+            name = document.pop('title')
             table = document.pop('table')
             date = document.pop('date')
             content_dict = json.loads(table)
@@ -203,22 +214,21 @@ def format_for_html(clicked_items):
             #document['table'] = df.to_html(index=False)
             document['table'] = 'Newtable'
             document['date'] = date
+            document['name'] = name
 
 
             # Append the document to the list under its index key in the defaultdict
             int_dict[document['index']][document['date']] = document
             # Extract unique dates from the result dictionary and convert them to a sorted list
             int_dates[document['index']].append(date)
-            print(str(int_dates) + "\n")
+            names[document['index']].append(name)
             
     else:
-        number_of_tables = 2
         int_dict = {0: {'05/2023': {'title': 'Default', 'table': 'Default 1', 'date': '05/2023'}},
                      1: {'06/2023': {'title': 'Default2', 'table': 'Default 2', 'date': '05/2023'}}}
         int_dates = {0: ['05/2023','06/2023'], 1: ['05/2024','06/2024']}
-    
-    print('intdates: ' + str(int_dates))
-    return int_dict, int_dates, number_of_tables
+     """
+    return int_dates, names
 
 
 
@@ -245,7 +255,6 @@ def format_for_browse(query):
             results_list.extend(job_list)
         else:
             results_list = job_list
-            print(results_list)
     else:
         if query:
             results_list = [f'No results found for "{query}"']

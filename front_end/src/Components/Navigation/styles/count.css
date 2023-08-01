@@ -15,11 +15,3 @@
   }
   
 
-  .docCounter {
-    display: flex;
-    position: relative;
-    border-radius: 10px;
-    font-size: medium;
-    color: var(--lofi-font-color);
-    background: var(--card-background-color);
-  }

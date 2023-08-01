@@ -1,20 +1,14 @@
+import React, { useContext } from 'react';
 import './App.css';
-import SideBar from './Components/SideBar/SideBar'
-import Navigation from './Components/Navigation/Navigation'
-import Pipeline from './Components/Pipeline/Pipeline'
+import Layout_Main from './Components/Layout_Main'
 import { AppContextProvider } from './Components/Context/Context';
 
 function App() {
+
+  
   return (
     <AppContextProvider >
-      <div className='hero'>
-        <SideBar/>
-        <div className='workContainer'>
-          <Navigation/>
-          <div className="divider"></div>
-          <Pipeline/>
-        </div>
-      </div>
+        <Layout_Main/>
     </AppContextProvider>
   );
 }

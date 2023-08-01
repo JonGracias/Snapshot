@@ -1,0 +1,139 @@
+.ant-layout{
+  background-color: #353740;
+  color: white;
+  height: 100vh;
+
+}
+
+.dateDropDown button{
+  background-color: #353740;
+  color: white;
+}
+.closeButton svg{
+  fill: white;
+}
+.closeButton button{
+  border: 1px solid white;
+}
+.closeButton{
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  margin: 5px;
+
+}
+
+  
+.ant-layout-sider-children{
+  display: flex;
+
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.ant-layout-sider-children button{
+  width:100%;
+  background-color: transparent;
+  border: none;
+  color: white;
+}
+.saveButton{
+  position: relative;
+  width: 100%;
+  border: 1px solid white;
+}
+
+
+.workContainer{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+  }
+  .divider {
+    height: 2px; /* Set the height of the divider */
+    background-color: #ddd;
+  }
+
+
+.ant-layout-header{
+  display: flex;
+  flex-direction: row;
+  background-color: red;
+}
+.ant-layout-header svg{
+  fill: white;
+}
+
+.ant-layout-header h1{
+  color: white;
+  background-image: linear-gradient(to right, red, rgb(255, 0, 0));
+  height: 100%;
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+
+
+
+.snapshot{
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  background-image: linear-gradient(to right, red, rgb(255, 0, 0));
+  height: 100%;
+}
+
+
+  .ant-menu {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .flexGrowContainer {
+    background-color: #202123;
+    padding-inline: 5px;
+    padding-top: 10px;
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
+    flex-grow: 1;
+    width: 100%;
+  
+
+  }
+
+  .flexGrowContainer li{
+    width:100%;
+    background-color:#202123;
+    border: 1px solid white;
+    color: white;
+  }
+
+  .flexGrowContainer ul {
+    background-color: white;
+  }
+  .flexGrowContainer .ant-menu-item.selected {
+    background-color: transparent;
+    border: 1px solid #353740;
+    color:#6e6e80;
+  }
+  .ant-menu-item.ant-menu-item-selected {
+    background-color: transparent;
+  }
+
+  .ant-menu-item.listStyles {
+    margin: 0;
+    padding: 0;
+    height: 63px;
+    border-radius: 0;
+    width: 100%;
+    background-color: red;
+  }
+  
+
+
+
+
