@@ -1,31 +1,29 @@
 import React, { useContext, useEffect, useState } from 'react';
 import AppContext from '../Context/Context';
-import { DownOutlined, CalendarOutlined } from '@ant-design/icons';
-import { Dropdown, Menu, Table } from 'antd'; // Import the Table component from ANT.design
 
-import './styles/display.css';
+import { Empty } from 'antd'; // Import the Table component from ANT.design
+
+import './styles/tables.css';
 
 function Tables() {
-  const { tables } = useContext(AppContext);
+  const { tables, currentIndex, currentDateIndex } = useContext(AppContext);
   const [formattedTables, setFormattedTables] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
-    // Parse the JSON strings into actual objects
-    const parsedTables = tables.map((jsonString) => JSON.parse(jsonString));
-    setFormattedTables(parsedTables);
-  }, [tables]);
+    //Index 0 here is based on title index
+    setFormattedTables(tables[currentIndex]);
+  }, [tables,currentIndex]);
 
   return (
     <>
-      {formattedTables.length > 0 ? (
-        <div>
-          {/* Use the ANT.design Table component to render the JSON data */}
-          <Table dataSource={formattedTables[0]} />
-        </div>
-      ) : (
-        <p>No available tables.</p>
+
+      {formattedTables ? (
+        // Index 0 here is based on date index
+        <div className='dataframe' dangerouslySetInnerHTML={{ __html: formattedTables[currentDateIndex] }}/>
+        ) : (
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} className={'emptyTable'} /> // Render Empty component when formattedTables is empty
       )}
+
     </>
   );
 }

@@ -1,17 +1,8 @@
 .counts {
     display: block;
-    width: 1em;
-    height: 0.5em;
-    background-color: grey;
-    border-radius: 8px;
+    position: relative;
+    margin: 10px;
   }
-  .counts:first-of-type {
-    margin-right: 0.5em; /* Adjust the left margin of the first card */
-    margin-left: 0.5em;
-  }
-  
-  .counts.lighter {
-    background-color: white;
-  }
+
   
 

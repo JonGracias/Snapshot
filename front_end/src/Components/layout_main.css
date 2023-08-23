@@ -26,10 +26,10 @@
   
 .ant-layout-sider-children{
   display: flex;
-
   flex-direction: column;
-  align-items: center;
+  justify-content: center;
   overflow: hidden;
+
 }
 
 .ant-layout-sider-children button{
@@ -125,8 +125,8 @@
   }
 
   .ant-menu-item.listStyles {
+    padding-top: 15px;
     margin: 0;
-    padding: 0;
     height: 63px;
     border-radius: 0;
     width: 100%;

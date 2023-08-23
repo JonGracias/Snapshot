@@ -1,0 +1,43 @@
+
+
+
+  .dataframe {
+    height: 100%;
+    width: 100%;
+    position: relative;
+
+  }
+
+  table {
+    width: 100%;
+  }
+  thead{
+    position: sticky;
+    top: 0;
+    background: linear-gradient(to top,
+    rgba(16, 136, 211, 0) 0%,
+    rgb(16, 136, 211, .2) 25%, 
+    rgba(16, 136, 211, 0.982) 75%, 
+    rgb(16, 136, 211, 1) 100%);
+    color: white;
+  }
+  tbody{
+    overflow-y: auto;
+  }
+  th,
+  td {
+    text-align: center;
+    word-wrap: break-word;
+    font-size: 12px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 5px;
+    overflow: hidden;
+  }  
+
+  .emptyTable{
+    height:100%;
+    width:100%;
+    margin:0;
+    padding:10em; 
+  }

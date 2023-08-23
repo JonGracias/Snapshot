@@ -6,14 +6,15 @@ const AppContext = createContext({});
 export const AppContextProvider = ({ children }) => {
     const [ tables, setTables] = useState([])
     const [ dates, setDates] = useState([])
-    const [ number_of_tables, setNumberOfTables] = useState([])
+
     const [ currentIndex, setCurrentIndex ] = useState(0)
     const [ selectedButtons, setSelectedButtons ] = useState([]);
     const [ resultsList, setResultsList ] = useState([]);
     const [ title, setTitle ] = useState('');
     const [collapsed, setCollapsed] = useState(false);
     const [snapDisplay, setDisplay] = useState('');
-    const [currentDatIndex, setCurrentDateIndex] = useState(0)
+    const [currentDateIndex, setCurrentDateIndex] = useState(0)
+    const [numberOfTables, setNumberOfTables] = useState(0)
 
 
     return (
@@ -23,10 +24,11 @@ export const AppContextProvider = ({ children }) => {
             resultsList    , setResultsList,
             title, setTitle,
             dates, setDates,
-            number_of_tables, setNumberOfTables,
+            numberOfTables, setNumberOfTables,
             collapsed, setCollapsed,
             snapDisplay, setDisplay,
-            tables, setTables
+            tables, setTables,
+            currentDateIndex, setCurrentDateIndex
         }}>
             {children}
         </AppContext.Provider>

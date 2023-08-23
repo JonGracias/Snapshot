@@ -1,22 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react';
 import AppContext from '../Context/Context';
 import { DownOutlined , CalendarOutlined } from '@ant-design/icons';
-import { Dropdown, Menu } from 'antd';
+import { Dropdown } from 'antd';
 import './styles/date.css';
 
 function DateComponent() {
-  const { dates } = useContext(AppContext);
+  const { dates, setCurrentDateIndex, currentIndex, currentDateIndex } = useContext(AppContext);
   const [formattedDates, setFormattedDates] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(null);
   
 
   useEffect(() => {
-    setFormattedDates(dates[dates.length-1] || []);
-  }, [dates]);
+    setFormattedDates(dates[currentIndex] || []);
+  }, [currentIndex]);
 
   const handleDateSelect = ({ key }) => {
-    setSelectedDate(formattedDates[key]); // Update the selected date based on the key
-    console.log(key)
+    setCurrentDateIndex(key)
   };
 
  
@@ -39,7 +37,7 @@ function DateComponent() {
           icon={<DownOutlined />}
           menu={menuProps}
         >
-          {selectedDate || formattedDates[0]} {/* Show selected date or "Select a Date" */}
+          {formattedDates[currentDateIndex]} {/* Show selected date or "Select a Date" */}
         </Dropdown.Button>
       ) : (
         <p>No available dates.</p>

@@ -3,17 +3,16 @@ import axios from "axios";
 import AppContext from "../Context/Context";
 import {
   FileAddOutlined,
-  FileSearchOutlined,
   SearchOutlined,
   SaveOutlined
 } from '@ant-design/icons';
-import {Menu, Button} from 'antd';
+import {Menu} from 'antd';
 import '../layout_main.css';
 
 
 const Browse = () => {
   const {
-    collapsed,
+    currentIndex,
     setCurrentIndex,
     resultsList,
     setResultsList,
@@ -22,7 +21,10 @@ const Browse = () => {
     setTitle,
     setDates,
     setDisplay,
-    setTables
+    setTables,
+    setNumberOfTables, 
+    numberOfTables,
+    setCurrentDateIndex
   } = useContext(AppContext);
 
   const responseDataRef = useRef([]);
@@ -30,18 +32,28 @@ const Browse = () => {
   const currentIndexRef = useRef(0);
 
   // Function to fetch data and set state using Axios
-  const fetchDataAndSetState = (items) => {
-    axios
-      .post("http://localhost:5000/navigation", { clickedItems: items })
-      .then((response) => {
-        const { titles, dates, tables } = response.data;
-        setDates(dates);
-        setTables(tables)
-
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+  const fetchDataAndSetState = (query) => {
+    if(query.length>0){
+      console.log(query)
+      axios
+        .post("http://localhost:5000/navigation", { clickedItems: query })
+        .then((response) => {
+          const { titles, dates, tables } = response.data;
+          setNumberOfTables(titles.length);
+          setCurrentIndex(numberOfTables-1)
+          setCurrentDateIndex(0)
+          setDates(dates);
+          setTables(tables);
+  
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+    }else{
+      setDates([])
+      setTables([])
+      setNumberOfTables(0);
+    }
   };
 
   useEffect(() => {
@@ -63,12 +75,15 @@ const Browse = () => {
     } else {
       setResultsList(responseDataRef.current);
     }
-  }, []);
+  }, [setResultsList]);
 
   useEffect(() => {
     setCurrentIndex(currentIndexRef.current - 1);
-    setTitle(selectedButtons[currentIndexRef.current - 1]);
-  }, [currentIndexRef.current, setTitle, selectedButtons, setCurrentIndex, setDates]);
+  }, [currentIndexRef.current]);
+
+  useEffect(() => {
+    setTitle(selectedButtons[currentIndex]);
+  }, [currentIndex]);
 
   // Function to handle selecting files
   const selectFiles = (itemName) => {
@@ -103,8 +118,9 @@ const Browse = () => {
 
 
     function changeDisplay(item){
-      console.log(item)
-      setDisplay(item)
+        console.log(item)
+        setDisplay(item)
+
     }
 
 

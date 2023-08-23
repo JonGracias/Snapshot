@@ -45,7 +45,7 @@ def navigation():
     return jsonify(
         titles=titles,
         dates=dates,
-        tables=tables
+        tables=tables,
     )
 
 # For React Front End
@@ -107,7 +107,7 @@ class Spreadsheet:
     @staticmethod
     def get(clicked_items=None):
         if clicked_items:
-            print('Clicked Items Before: ' + str(clicked_items))
+            """ print('Clicked Items Before: ' + str(clicked_items)) """
             # Retrieve MongoDB documents based on clicked_items
             documents = list(
                 mongo.db[collection_name].find({'title': {'$in': clicked_items}})
@@ -122,6 +122,8 @@ class Spreadsheet:
         dates = []  
         grouped_tables = []
         tables = []  
+       
+
 
         # Function to get the index of a title in the clicked_items list
         def get_clicked_items_index(title):
@@ -139,6 +141,23 @@ class Spreadsheet:
             title = document['title']
             date = document['date']
             table = document['table']
+            content_dict = json.loads(table)
+
+            content_key = next(iter(content_dict.keys()))
+            if isinstance(content_dict[content_key], str):
+                transformed_content = [{k: v.replace('\n', '')} for k, v in json.loads(content_dict[content_key]).items()]
+            else:
+                transformed_content = [
+                    {k: v.replace('\n', '') for k, v in entry.items()} for entry in content_dict[content_key]
+                ]
+
+            # Convert the list of dictionaries to a pandas DataFrame
+            if isinstance(transformed_content, str):
+                df = pd.DataFrame()
+            else:
+                df = pd.DataFrame(transformed_content)
+            dataSource = df.to_html(index=False)
+        
 
             # Increment the count only on the first occurrence of the title
             if title not in isNewTitle:
@@ -147,8 +166,8 @@ class Spreadsheet:
                 titles.append(title)
                 dates=[]
                 grouped_dates.insert(title_counts, dates)
-                table = []
-                grouped_tables.insert(title_counts, tables)
+                tables = []
+                grouped_tables.insert(title_counts, dataSource)
 
             # Add the index number to the document dictionary
             document['index'] = title_counts
@@ -156,19 +175,16 @@ class Spreadsheet:
 
             # Add current title to isNewTitle
             dates.append(date)
-            tables.append(document['table'])
+            tables.append(dataSource)
+            grouped_tables[title_counts] = tables
             grouped_dates[title_counts]=dates
-            grouped_tables[title_counts]=tables
             isNewTitle.append(title)
 
 
 
         if documents and 'table' in documents[0]:
-            print('Titles after: ' + str(titles))
-            print('Grouped dates' + str(grouped_dates))
-            print('Grouped tables' + str(tables))
-            # Return the list of all titles
-            return titles, grouped_dates, tables[0]
+            print('Tables' + str(grouped_tables))
+            return titles, grouped_dates, grouped_tables
         else:
             print("No documents found or missing 'table' field")
             return [
